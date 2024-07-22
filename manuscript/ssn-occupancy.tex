@@ -1,0 +1,410 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  11pt,
+  a4paper,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{setspace}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage[]{mathpazo}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\pagestyle{plain}
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\usepackage{lineno} % add 
+\linenumbers % turns line numbering on 
+
+% Allowing for landscape pages
+\usepackage{lscape}
+\newcommand{\blandscape}{\begin{landscape}}
+\newcommand{\elandscape}{\end{landscape}}
+
+% Left justification of the text: see https://www.sharelatex.com/learn/Text_alignment
+% \usepackage[document]{ragged2e} % already in the latex template
+\newcommand{\bleft}{\begin{flushleft}}
+\newcommand{\eleft}{\end{flushleft}}
+
+
+% Add Supplementary Tables and Figures
+% Code from https://stackoverflow.com/a/51337664
+\newcommand{\beginsupplement}{
+  \setcounter{table}{0}  
+  \renewcommand{\thetable}{S\arabic{table}}
+  \setcounter{figure}{0} 
+  \renewcommand{\thefigure}{S\arabic{figure}}
+}
+
+
+
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Spatial occupancy models for data collected on stream networks},
+  pdfauthor={Olivier Gimenez1*},
+  colorlinks=true,
+  linkcolor={RoyalBlue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={RoyalBlue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Spatial occupancy models for data collected on stream networks}
+\author{Olivier Gimenez\textsuperscript{1}*}
+\date{2024-07-22}
+
+\begin{document}
+\maketitle
+
+\setstretch{2}
+\small
+
+\textsuperscript{1} CEFE, Univ Montpellier, CNRS, EPHE, IRD, Montpellier, France
+
+\texttt{*} Corresponding author: \href{mailto:olivier.gimenez@cefe.cnrs.fr}{\nolinkurl{olivier.gimenez@cefe.cnrs.fr}}
+
+\normalsize
+
+\vspace{1cm}
+\hrule
+
+To monitor streams and rivers biodiversity, we need to quantify species distribution. To do so, occupancy models allow distinguishing the non-detection of a species from its actual absence. Occupancy models can account for spatial autocorrelation, but are not suited for streams and rivers because of their spatial structure in networks. Here I propose spatial occupancy models for data collected on stream and river networks. I present the statistical developments of the model, then I illustrate the approach on a semi-aquatic mammal. Overall, spatial stream network occupancy models provide a formal approach to assess biodiversity in streams and rivers.
+
+\vspace{3mm}
+\hrule
+\vspace{5mm}
+
+\emph{Keywords}: Bayesian statistics, Spatial stream network models, Occupancy models, Spatial autocorrelation, Wildlife monitoring
+
+\bleft
+\newpage
+
+\section{INTRODUCTION}\label{introduction}
+
+Streams and rivers provide essential habitats for numerous species of animals and plants, many of which are endemic (\citeproc{ref-D2006}{Dudgeon et al. 2006}). The ecological health of these freshwater ecosystems is paramount not only for the biodiversity they harbor but also for the ecosystem services they provide, which are indispensable to both wildlife and human populations (\citeproc{ref-V2022}{Vári et al. 2021}). However, human activities are altering the natural conditions of streams, rivers and their associated riparian habitats, jeopardizing the persistence of these ecosystems (\citeproc{ref-A2020}{Albert et al. 2020}).
+
+In that context, species distribution models (SDMs) are essential tools in understanding and preserving biodiversity (\citeproc{ref-Elith2009}{Elith and Leathwick 2009}). SDMs predict the distribution of species, helping scientists and conservationists identify critical habitats and biodiversity hotspots. SDMs also inform strategies aimed at mitigating impacts of climate and land-use changes, manage invasive species or enhancing habitat connectivity in freshwater ecosystems (\citeproc{ref-D2015}{Domisch et al. 2015}).
+
+SDMs are known to be affected by two main issues, namely imperfect detection and spatial autocorrelation (\citeproc{ref-GK2018}{Guélat and Kéry 2018}). First, a species present in a given area may go undetected during surveys due to various factors such as observer experience, species behavior, and environmental conditions. Ignoring \emph{imperfect detection} can lead to biased estimates of species distribution, and flawed inference about the relationship between species presence and environmental factors (\citeproc{ref-Kery2008}{Kéry and Schmidt 2008}, \citeproc{ref-Lahoz2014}{Lahoz-Monfort et al. 2014}), potentially misinforming conservation strategies and habitat management decisions. To address this issue, occupancy models are SDMs that rely on repeated visits of spatial sampling units for inferring distribution (\citeproc{ref-mackenzie2017}{MacKenzie et al. 2017}). These models have been widely used in freshwater ecosystems for various taxa (\citeproc{ref-Hamer2021}{Hamer et al. 2021}, \citeproc{ref-Preece2021}{Preece et al. 2021}, \citeproc{ref-Charbonnel2022}{Charbonnel et al. 2022}, \citeproc{ref-Wedderburn2022}{Wedderburn et al. 2022}). Second, SDMs rely on the assumption of independent residuals, which may be violated if sampling sites that are close together tend to have similar probabilities of species presence \textbf{pas très bien dit, et je ne parle jamais de pr d occupancy, y remédier?}. Ignoring \emph{spatial autocorrelation} can lead to biased estimates of species distribution, and can inflate the probability of erroneously detecting the effect of environmental covariates (\citeproc{ref-Dormann2007}{Dormann et al. 2007}). Several extensions of occupancy models have been proposed to account for spatial autocorrelation, building on existing conditional autoregressive and geoadditive models in the spatial statistics litterature (\citeproc{ref-Johnson2013}{Johnson et al. 2013}, \citeproc{ref-Broms2014}{Broms et al. 2014}, \citeproc{ref-Rushing2019}{Rushing et al. 2019}). However, these models rely on the Euclidean distance between the spatial sampling units, which does not acknowledge the spatial structure of streams and rivers in networks.
+
+Here I propose spatial occupancy models that allow spatial autocorrelation structured according to stream flow and flow connectivity. I build on the linear mixed modelling approach proposed by (\citeproc{ref-Peterson2010}{Peterson and Hoef 2010}, \citeproc{ref-VerHoef2010}{Ver Hoef and Peterson 2010}), which allows considering a mixture of distance-based spatial correlation structures (Euclidean or not) in a single model. I plug-in this variance component approach into occupancy models using a Bayesian approach. I present the statistical developments of the model, and I illustrate the approach on a semi-aquatic mammal in French streams and rivers.
+
+\section{METHODS}\label{methods}
+
+\url{https://onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2699.2011.02487.x}
+
+How is spatial autocorrelation accounted for in occupancy models?
+
+The usual way is to write the probability of occupancy on some scale, here the logit scale, as a function of covariates the X and some random effect epsilon to capture spatial variation.
+
+This epsilon is distributed as a multivariate normal distribution with a covariance matrix which we write as the product of a variance term sigma squared times a correlation matrix big R.
+
+Big R captures the correlation between each pair of sites, the lower-case r's.
+
+These correlations are assumed to be a function of the distance between sites i and j, and a scale parameter theta. Here this function is the exponential.
+
+The correlation will be 1 at distance 0 when i and j are the same site. The correlation will decline with increasing distance between two sites.
+
+In addition, the larger the scale parameter theta,
+the slower the decrease in correlation with distance.
+
+The question now is which distance should we use. Let's get back to being an otter travelling the river to find fish and shelter. If the flow goes from top to bottom. Then going from site 1 to 4 is tricky and the euclidean distance is irrelevant. So we prefer using stream distance instead, and go from site 1 to 4 by following the flow. We will call them flow-connected sites. Let's forget about otters for a minute. Let's assume we're studying organisms that disperse passively with the flow, like mussels or some insects.
+We need to consider models that do not allow autocorrelation between sites if the water at one site does not flow into another. Like here between sites 1 and 2. We will call them flow-unconnected sites. So two things are important: stream distance and flow connectivity.
+
+Jay Ver Hoef and Erin Peterson back in 2010 developed statistical models that allow accounting for stream distance and flow connectivity in linear models.
+
+These are called spatial stream network models.
+
+They add a random term with spatial covariance between flow-connected sites.
+
+Then they add spatial covariance between flow connected and flow-unconnected sites.
+
+This is for correlation between sites that can occur with active movements, with or against the river flow ;
+
+Last, they add correlation that can occurs independently of the network topology using the Euclidean distance.
+
+In which we structure the random effect like in spatial stream network models we've just seen.
+
+\subsection{Occupancy models}\label{occupancy-models}
+
+Any spatial or ecologically relevant variable can be used to construct the weights, as long as it is available for every segment in the stream network (Fig. 1). Simple options are to use equal weights or Shreve's stream order (Shreve, 1967), but the watershed area (i.e.~area of land that drains downhill to a common point on the stream network) is commonly used as a surrogate for water volume (Frieden et al., 2014).
+
+Tail-down models differ from tail-up models because they allow spatial correlation between both flow-connected and flow-unconnected locations.
+
+Occupancy models rely on several assumptions.
+First, we assume closure which means we assume a site remains in the same state, occupied or non-occupied.
+Second we assume independence of the surveys and sites.
+
+\subsection{Case study}\label{case-study}
+
+We used the statistical language \texttt{R} (\citeproc{ref-R_Core_Team_2023}{R Core Team 2023}) for all our analyses. These were implemented in \texttt{SSN2} (\citeproc{ref-Dumelle_2023}{Dumelle et al. 2023}), \texttt{tidyverse} (\citeproc{ref-Wickham_2019}{Wickham et al. 2019}), \texttt{sf} (\citeproc{ref-Pebesma_2018}{Pebesma 2018}, \citeproc{ref-Pebesma_2023}{Pebesma and Bivand 2023}), \texttt{rstan} (\citeproc{ref-Stan_Development_Team_2023}{Stan Development Team 2023}), \texttt{bayesplot} (\citeproc{ref-Gabry_2019}{Gabry et al. 2019}, \citeproc{ref-Gabry_2022}{Gabry and Mahr 2022}), \texttt{geodata} (\citeproc{ref-Hijmans_2024}{Hijmans et al. 2024}), \texttt{ggspatial} (\citeproc{ref-Dunnington_2023}{Dunnington 2023}), \texttt{rmapshaper} and (\citeproc{ref-Teucher_2023}{Teucher and Russell 2023}) packages.
+
+The species went almost extinct in the 20th century, it was hunted for its fur. Thanks to the banning of hunting and its protection, it is now recolonizing our country. In that context, the question we're asking is what is its current distribution.
+
+To answer this question, we collect scats the species leaves behind.
+
+Now to the case study. I investigated the effect of human disturbance on otter occupancy.
+The study site is in this rectangle here, between Montpellier where I live and Swansea.
+There were 56 sites that were visited 3 times.
+Clearly we have some spatial variation in the number of detections.
+I used human density as a proxy for human disturbance.
+Human density can lead to disturbance of otters through urbanization for example.
+We recorded human density as the number of inhabitants per km2 in a buffer around each stream.
+
+\section{RESULTS}\label{results}
+
+Trees in forest \emph{A} grew taller than those in forest \emph{B} (mean height: 25 versus 13 m).
+
+And many more cool results that get updated dynamically, e.g.~see Table \ref{tab:Table-mtcars} and Fig. \ref{fig:scatterplot}. Note Tables and Figures are \textbf{cross-linked and numbered automatically}. They could also appear in the middle of the document, not necessarily at the end.
+
+See also Fig. \ref{fig:SupplFig} and Table \ref{tab:SupplTable} in the Supplementary Material.
+
+When spatial autocorrelation is ignored, we found a negative effect of human density on occupancy probability.
+
+However, when we accounted for spatial autocorrelation using our new model, human density had no longer an effect on occupancy.
+
+The effect size of human density increases when spatial autocorrelation is ignored.
+
+The most likely explanation is that of a bias due to an omitted variable.
+Human density is spatially correlated, and its effect size is inflated.
+This bias is controlled when spatial autocorrelation is included.
+There is probably a difference in occupancy according to another variable that would need to be accounted for.
+
+\section{DISCUSSION}\label{discussion}
+
+Si besoin, merge results and discussion sections.
+
+The focal ecological parameter of interest is the occupancy probability \(\psi\), which is represented similarly in all the five models compared. However, the precision of the occupancy estimation is impacted by the quality of the estimation for the detection process (kery2008, kellner2014). In this study, we focused on cases in which data is collected continuously, for example with sensors or opportunistic data. We aimed to evaluate whether modelling the detection process in continuous time could enhance the precision of the estimated probability of occupancy.
+
+Ecologically, omitted bias variable. Check in Couturier which one it could be. Citer quand même le papier de Hodges sur spatial confusion. Citer aussi les échanges avec Jay VerHoef pour la difficulté in estimating le sill parameter. Mais ok pour covariate et prediction de l'occupancy.
+
+Application à eDNA. Alors besoin peut-être d'autres termes spatiaux comme tail-up, et euclidean. Ici on a utilisé que tail-down car on s'interesse aux otters. eDNA important pour monitor biodiv in freshwater and marine realms. If false positives wored out (voir work de E. Matechou), resste à proprement prendfre en compte spatial autocorrelation.
+
+Extension à dynamic occupancy models. Colonization function of distance to features that hamper movement of individuals. Citer les papier de Chandler, Morin et celui à paraître de Kervellec. L'idée est qu'on pourrait regarder la question de la connectivité dans river et stream network. Pas super compliqué, le papier du portuguais a paved the road.
+
+Extending to dynamic occupancy to write the probability of colonization as a function of distance to landscape features that might hamper movements, and therefore assessing connectivity.
+
+\section{Ethics and Integrity statements}\label{ethics-and-integrity-statements}
+
+\subsection{Data availability statement}\label{data-availability-statement}
+
+Data and code are available at \href{https://github.com/oliviergimenez?tab=repositories}{https://github.com/oliviergimenez?tab=repositories}.
+
+\subsection{Funding statement}\label{funding-statement}
+
+This research is a product of the DISCAR group funded by the French Foundation for Research on Biodiversity (FRB) through its synthesis center CESAB.
+
+\subsection{Conflict of interest disclosure}\label{conflict-of-interest-disclosure}
+
+The author has no conflicts of interest to declare.
+
+\section{REFERENCES}\label{references}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-A2020}
+Albert, J. S., G. Destouni, S. M. Duke-Sylvester, A. E. Magurran, T. Oberdorff, R. E. Reis, K. O. Winemiller, and W. J. Ripple. 2020. \href{https://api.semanticscholar.org/CorpusID:211074855}{Scientists' warning to humanity on the freshwater biodiversity crisis}. Ambio 50:85--94.
+
+\bibitem[\citeproctext]{ref-Broms2014}
+Broms, K. M., D. S. Johnson, R. Altwegg, and L. L. Conquest. 2014. Spatial occupancy models applied to atlas data show southern ground hornbills strongly depend on protected areas. Ecological Applications 24:363--374.
+
+\bibitem[\citeproctext]{ref-Charbonnel2022}
+Charbonnel, A., F. Blanc, P. Laffaille, M. Némoz, and L. Buisson. 2022. Combining spatial dependence occupancy models and conservation gap analyses to promote species conservation: A case study with a threatened semi-aquatic mammal. Biological Conservation 270:109567.
+
+\bibitem[\citeproctext]{ref-D2015}
+Domisch, S., S. Jähnig, J. Simaika, M. Kuemmerlen, and S. Stoll. 2015. Application of species distribution models in stream ecosystems: The challenges of spatial and temporal scale, environmental predictors and species occurrence data. Fundamental and Applied Limnology / Archiv f{ü}r Hydrobiologie 186:45--61.
+
+\bibitem[\citeproctext]{ref-Dormann2007}
+Dormann, F. C., J. M. McPherson, M. B. Araújo, R. Bivand, J. Bolliger, G. Carl, R. G. Davies, A. Hirzel, W. Jetz, W. Daniel Kissling, I. Kühn, R. Ohlemüller, P. R. Peres-Neto, B. Reineking, B. Schröder, F. M. Schurr, and R. Wilson. 2007. Methods to account for spatial autocorrelation in the analysis of species distributional data: A review. Ecography 30:609--628.
+
+\bibitem[\citeproctext]{ref-D2006}
+Dudgeon, D., A. H. Arthington, M. O. Gessner, Z.-I. Kawabata, D. J. Knowler, C. Lévêque, R. J. Naiman, A.-H. Prieur-Richard, D. Soto, M. L. J. Stiassny, and C. A. Sullivan. 2006. Freshwater biodiversity: Importance, threats, status and conservation challenges. Biological Reviews 81:163--182.
+
+\bibitem[\citeproctext]{ref-Dumelle_2023}
+Dumelle, M., E. Peterson, J. M. Ver Hoef, A. Pearse, and D. Isaak. 2023. {SSN2}: Spatial modeling on stream networks in {R}.
+
+\bibitem[\citeproctext]{ref-Dunnington_2023}
+Dunnington, D. 2023. \href{https://CRAN.R-project.org/package=ggspatial}{Ggspatial: Spatial data framework for ggplot2}.
+
+\bibitem[\citeproctext]{ref-Elith2009}
+Elith, J., and J. R. Leathwick. 2009. Species distribution models: Ecological explanation and prediction across space and time. Annual Review of Ecology, Evolution, and Systematics 40:677--697.
+
+\bibitem[\citeproctext]{ref-Gabry_2022}
+Gabry, J., and T. Mahr. 2022. \href{https://mc-stan.org/bayesplot/}{Bayesplot: Plotting for bayesian models}.
+
+\bibitem[\citeproctext]{ref-Gabry_2019}
+Gabry, J., D. Simpson, A. Vehtari, M. Betancourt, and A. Gelman. 2019. \href{https://doi.org/10.1111/rssa.12378}{Visualization in bayesian workflow}. J. R. Stat. Soc. A 182:389--402.
+
+\bibitem[\citeproctext]{ref-GK2018}
+Guélat, J., and M. Kéry. 2018. Effects of spatial autocorrelation and imperfect detection on species distribution models. Methods in Ecology and Evolution 9:1614--1625.
+
+\bibitem[\citeproctext]{ref-Hamer2021}
+Hamer, A. J., D. Schmera, and M. J. Mahony. 2021. Multi-species occupancy modeling provides novel insights into amphibian metacommunity structure and wetland restoration. Ecological Applications 31:e2293.
+
+\bibitem[\citeproctext]{ref-Hijmans_2024}
+Hijmans, R. J., M. Barbosa, A. Ghosh, and A. Mandel. 2024. \href{https://CRAN.R-project.org/package=geodata}{Geodata: Download geographic data}.
+
+\bibitem[\citeproctext]{ref-Johnson2013}
+Johnson, D. S., P. B. Conn, M. B. Hooten, J. C. Ray, and B. A. Pond. 2013. Spatial occupancy models for large data sets. Ecology 94:801--808.
+
+\bibitem[\citeproctext]{ref-Kery2008}
+Kéry, M., and B. Schmidt. 2008. Imperfect detection and its consequences for monitoring in conservation. Community Ecology - COMMUNITY ECOL 9:207--216.
+
+\bibitem[\citeproctext]{ref-Lahoz2014}
+Lahoz-Monfort, J. J., G. Guillera-Arroita, and B. A. Wintle. 2014. Imperfect detection impacts the performance of species distribution models. Global Ecology and Biogeography 23:504--515.
+
+\bibitem[\citeproctext]{ref-mackenzie2017}
+MacKenzie, D. I., J. D. Nichols, J. A. Royle, K. H. Pollock, L. L. Bailey, and J. E. Hines. 2017. Occupancy {Estimation} and {Modeling}: {Inferring Patterns} and {Dynamics} of {Species Occurrence}. {Elsevier}.
+
+\bibitem[\citeproctext]{ref-Pebesma_2018}
+Pebesma, E. 2018. \href{https://doi.org/10.32614/RJ-2018-009}{{Simple Features for R: Standardized Support for Spatial Vector Data}}. {The R Journal} 10:439--446.
+
+\bibitem[\citeproctext]{ref-Pebesma_2023}
+Pebesma, E., and R. Bivand. 2023. \href{https://doi.org/10.1201/9780429459016}{{Spatial Data Science: With applications in R}}. {Chapman and Hall/CRC}.
+
+\bibitem[\citeproctext]{ref-Peterson2010}
+Peterson, E. E., and J. M. V. Hoef. 2010. A mixed-model moving-average approach to geostatistical modeling in stream networks. Ecology 91:644--651.
+
+\bibitem[\citeproctext]{ref-Preece2021}
+Preece, E. P., M. Bryan, S. M. Mapes, C. Wademan, and R. Dorazio. 2021. Monitoring for freshwater mussel presence in rivers using environmental DNA. Environmental DNA 3:591--604.
+
+\bibitem[\citeproctext]{ref-R_Core_Team_2023}
+R Core Team. 2023. \href{https://www.R-project.org/}{R: A language and environment for statistical computing}. R Foundation for Statistical Computing, Vienna, Austria.
+
+\bibitem[\citeproctext]{ref-Rushing2019}
+Rushing, C., J. andrew Royle, D. Ziolkowski Jr, and K. Pardieck. 2019. Modeling spatially and temporally complex range dynamics when detection is imperfect. Scientific Reports 9.
+
+\bibitem[\citeproctext]{ref-Stan_Development_Team_2023}
+Stan Development Team. 2023. \href{https://mc-stan.org/}{{RStan}: The {R} interface to {Stan}}.
+
+\bibitem[\citeproctext]{ref-Teucher_2023}
+Teucher, A., and K. Russell. 2023. \href{https://CRAN.R-project.org/package=rmapshaper}{Rmapshaper: Client for 'mapshaper' for 'geospatial' operations}.
+
+\bibitem[\citeproctext]{ref-V2022}
+Vári, Á., S. Podschun, T. Eros, T. Hein, B. Pataki, C. Ioja, C. Adamescu, A. Gerhardt, T. Gruber, A. Dedić, M. Ciric, B. Gavrilović, and A. Báldi. 2021. Freshwater systems and ecosystem services: Challenges and chances for cross-fertilization of disciplines. Ambio 51:135--151.
+
+\bibitem[\citeproctext]{ref-VerHoef2010}
+Ver Hoef, J., and E. Peterson. 2010. A moving average approach for spatial statistical models of stream networks. Journal of the American Statistical Association 105:6--18.
+
+\bibitem[\citeproctext]{ref-Wedderburn2022}
+Wedderburn, S. D., N. S. Whiterod, and L. Vilizzi. 2022. Occupancy modelling confirms the first extirpation of a freshwater fish from one of the world's largest river systems. Aquatic Conservation: Marine and Freshwater Ecosystems 32:258--268.
+
+\bibitem[\citeproctext]{ref-Wickham_2019}
+Wickham, H., M. Averick, J. Bryan, W. Chang, L. D. McGowan, R. François, G. Grolemund, A. Hayes, L. Henry, J. Hester, M. Kuhn, T. L. Pedersen, E. Miller, S. M. Bache, K. Müller, J. Ooms, D. Robinson, D. P. Seidel, V. Spinu, K. Takahashi, D. Vaughan, C. Wilke, K. Woo, and H. Yutani. 2019. \href{https://doi.org/10.21105/joss.01686}{Welcome to the {tidyverse}}. Journal of Open Source Software 4:1686.
+
+\end{CSLReferences}
+
+\eleft
+
+\clearpage
+
+\newpage
+
+\blandscape
+
+\begin{figure}[b]
+
+{\centering \includegraphics[width=0.98\linewidth]{mainfigure} 
+
+}
+
+\caption{Second figure in landscape format.}\label{fig:Fig-landscape}
+\end{figure}
+
+\elandscape
+
+\end{document}
