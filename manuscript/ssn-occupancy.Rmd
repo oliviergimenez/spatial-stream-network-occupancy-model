@@ -166,7 +166,7 @@ Second we assume independence of the surveys and sites.
 ## Case study
 
 
-
+Sites in counties Lot (46), Aveyron (12) and Cantal (15). First two are in Pyrénées, third is in Massif Central. 
 
 We used the statistical language `R` `r citep(citation())` for all our analyses. These were implemented in `SSN2` `r citep(citation("SSN2"))`, `tidyverse` `r citep(citation("tidyverse"))`, `sf` `r citep(citation("sf"))`, `rstan` `r citep(citation("rstan"))`, `bayesplot` `r citep(citation("bayesplot"))`, `geodata` `r citep(citation("geodata"))`, `ggspatial` `r citep(citation("ggspatial"))`, `rmapshaper` and `r citep(citation("rmapshaper"))` packages. 
 
