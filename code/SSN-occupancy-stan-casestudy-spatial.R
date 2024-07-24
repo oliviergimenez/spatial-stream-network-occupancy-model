@@ -9,6 +9,33 @@ library(geodata) # downloading geographic data
 library(ggspatial) # interacting with spatial data using ggplot2
 library(rmapshaper) # wrapping the mapshaper javascript library to simplify spatial object
 
+#--- references for packages not cited in manuscript
+
+# SSN2: 
+#   Dumelle M, Peterson, E, Ver Hoef JM, Pearse A, Isaak D (2023). SSN2: Spatial Modeling on Stream Networks in R. R package version 0.1.0
+#
+# tidyverse: 
+#   Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache
+#   SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). Welcome to the tidyverse.
+#   Journal of Open Source Software, 4(43), 1686. doi:10.21105/joss.01686 <https://doi.org/10.21105/joss.01686>.
+#
+# sf: 
+#  Pebesma, E., & Bivand, R. (2023). Spatial Data Science: With Applications in R. Chapman and Hall/CRC. https://doi.org/10.1201/9780429459016
+#  Pebesma, E., 2018. Simple Features for R: Standardized Support for Spatial Vector Data. The R Journal 10 (1), 439-446, https://doi.org/10.32614/RJ-2018-009
+#
+# bayesplot:
+#   Gabry J, Mahr T (2022). “bayesplot: Plotting for Bayesian Models.” R package version 1.10.0, <https://mc-stan.org/bayesplot/>.
+#   Gabry J, Simpson D, Vehtari A, Betancourt M, Gelman A (2019). Visualization in Bayesian workflow. J. R. Stat. Soc. A, 182, 389-402. doi:10.1111/rssa.12378 <https://doi.org/10.1111/rssa.12378>.
+#
+# geodata: 
+#   Hijmans RJ, Barbosa M, Ghosh A, Mandel A (2024). _geodata: Download Geographic Data_. R package version 0.6-2, <https://CRAN.R-project.org/package=geodata>.
+#
+# ggspatial:
+#   Dunnington D (2023). _ggspatial: Spatial Data Framework for ggplot2_. R package version 1.1.8, <https://CRAN.R-project.org/package=ggspatial>.
+#
+# rmapshaper: citation("rmapshaper")
+#   Teucher A, Russell K (2023). _rmapshaper: Client for 'mapshaper' for 'Geospatial' Operations_. R package version 0.5.0, <https://CRAN.R-project.org/package=rmapshaper>.
+
 #--- get occupancy data
 
 sites_occ <- st_read("data/shp/sites.shp")
