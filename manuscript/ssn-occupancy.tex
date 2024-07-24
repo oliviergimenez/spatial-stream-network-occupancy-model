@@ -146,7 +146,7 @@
 
 \title{Spatial occupancy models for data collected on stream networks}
 \author{Olivier Gimenez\textsuperscript{1}*}
-\date{2024-07-24}
+\date{2024-07-25}
 
 \begin{document}
 \maketitle
@@ -295,6 +295,8 @@ occupancy modeling and spatial modeling in general.
 
 From Rushing paper. The distributions of most species are characterized by complex and dynamic variation in occurrence. Species distribution modeling seeks to relate this variation to environmental covariates and extrapolate these relationships to unsampled sites and times. Because habitats and species-habitat relationships change across both space and time, conventional GLM-based models rarely capture the inherent complexity of species distributions, especially when inferences are made across large spatial or long temporal scales. Here, we demonstrate a novel occupancy-based SDM that combines environmental predictors with a spatial GAM to model covariate relationships and complex, non-linear spatial variation in occupancy probability while accounting for imperfect detection.
 
+Acknowledge similar approach for count data by (\citeproc{ref-Lu2024}{Lu et al. 2024}).
+
 \section{Acknowledgments}\label{acknowledgments}
 
 Jay Ver Hoef, Edgar Santos Fernández and Maëlis Kervellec.
@@ -318,7 +320,7 @@ The author has no conflicts of interest to declare.
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
 \bibitem[\citeproctext]{ref-A2020}
-Albert, J. S., G. Destouni, S. M. Duke-Sylvester, A. E. Magurran, T. Oberdorff, R. E. Reis, K. O. Winemiller, and W. J. Ripple. 2020. \href{https://api.semanticscholar.org/CorpusID:211074855}{Scientists' warning to humanity on the freshwater biodiversity crisis}. Ambio 50:85--94.
+Albert, J. S., G. Destouni, S. M. Duke-Sylvester, A. E. Magurran, T. Oberdorff, R. E. Reis, K. O. Winemiller, and W. J. Ripple. 2020. Scientists' warning to humanity on the freshwater biodiversity crisis. Ambio 50:85--94.
 
 \bibitem[\citeproctext]{ref-Broms2014}
 Broms, K. M., D. S. Johnson, R. Altwegg, and L. L. Conquest. 2014. Spatial occupancy models applied to atlas data show southern ground hornbills strongly depend on protected areas. Ecological Applications 24:363--374.
@@ -327,13 +329,13 @@ Broms, K. M., D. S. Johnson, R. Altwegg, and L. L. Conquest. 2014. Spatial occup
 Charbonnel, A., F. Blanc, P. Laffaille, M. Némoz, and L. Buisson. 2022. Combining spatial dependence occupancy models and conservation gap analyses to promote species conservation: A case study with a threatened semi-aquatic mammal. Biological Conservation 270:109567.
 
 \bibitem[\citeproctext]{ref-clark2019}
-Clark, A. E., and R. Altwegg. 2019. Efficient bayesian analysis of occupancy models with logit link functions. Ecology and Evolution 9:756--768.
+Clark, A. E., and R. Altwegg. 2019. Efficient {B}ayesian analysis of occupancy models with logit link functions. Ecology and Evolution 9:756--768.
 
 \bibitem[\citeproctext]{ref-Couturier2024}
 Couturier, T., J. Steinmetz, P. Defos du Rau, D. Marc, E. Trichet, R. Gomes, and A. Besnard. 2023. Intensive agriculture as the main limiting factor of the otter's return in southwest france. Biological Conservation 279:109927.
 
 \bibitem[\citeproctext]{ref-D2015}
-Domisch, S., S. Jähnig, J. Simaika, M. Kuemmerlen, and S. Stoll. 2015. Application of species distribution models in stream ecosystems: The challenges of spatial and temporal scale, environmental predictors and species occurrence data. Fundamental and Applied Limnology / Archiv f{ü}r Hydrobiologie 186:45--61.
+Domisch, S., S. Jähnig, J. Simaika, M. Kuemmerlen, and S. Stoll. 2015. Application of species distribution models in stream ecosystems: The challenges of spatial and temporal scale, environmental predictors and species occurrence data. Fundamental and Applied Limnology 186:45--61.
 
 \bibitem[\citeproctext]{ref-Dormann2007}
 Dormann, F. C., J. M. McPherson, M. B. Araújo, R. Bivand, J. Bolliger, G. Carl, R. G. Davies, A. Hirzel, W. Jetz, W. Daniel Kissling, I. Kühn, R. Ohlemüller, P. R. Peres-Neto, B. Reineking, B. Schröder, F. M. Schurr, and R. Wilson. 2007. Methods to account for spatial autocorrelation in the analysis of species distributional data: A review. Ecography 30:609--628.
@@ -351,7 +353,7 @@ Guélat, J., and M. Kéry. 2018. Effects of spatial autocorrelation and imperfec
 Hamer, A. J., D. Schmera, and M. J. Mahony. 2021. Multi-species occupancy modeling provides novel insights into amphibian metacommunity structure and wetland restoration. Ecological Applications 31:e2293.
 
 \bibitem[\citeproctext]{ref-VerHoef2014}
-Hoef, J. M. V., E. E. Peterson, D. Clifford, and R. Shah. 2014. \href{https://www.jstatsoft.org/article/view/v056i03}{{SSN}: An {R} package for spatial statistical modeling on stream networks}. Journal of Statistical Software 56:1--45.
+Hoef, J. M. V., E. E. Peterson, D. Clifford, and R. Shah. 2014. {SSN}: An {R} package for spatial statistical modeling on stream networks. Journal of Statistical Software 56:1--45.
 
 \bibitem[\citeproctext]{ref-isaak2014applications}
 Isaak, D. J., E. E. Peterson, J. M. Ver Hoef, S. J. Wenger, J. A. Falke, C. E. Torgersen, C. Sowder, E. A. Steel, M.-J. Fortin, C. E. Jordan, and others. 2014. Applications of spatial statistical network models to stream data. Wiley Interdisciplinary Reviews: Water 1:277--294.
@@ -360,22 +362,25 @@ Isaak, D. J., E. E. Peterson, J. M. Ver Hoef, S. J. Wenger, J. A. Falke, C. E. T
 Johnson, D. S., P. B. Conn, M. B. Hooten, J. C. Ray, and B. A. Pond. 2013. Spatial occupancy models for large data sets. Ecology 94:801--808.
 
 \bibitem[\citeproctext]{ref-Kattwinkel2020}
-Kattwinkel, M., E. Szöcs, E. Peterson, and R. Schäfer. 2020. Preparing GIS data for analysis of stream monitoring data: The r package openSTARS. Plos One 15:e0239237.
+Kattwinkel, M., E. Szöcs, E. Peterson, and R. Schäfer. 2020. Preparing GIS data for analysis of stream monitoring data: The {R} package openSTARS. Plos One 15:e0239237.
 
 \bibitem[\citeproctext]{ref-Kervellec2023}
 Kervellec, M., T. Couturier, S. Bauduin, D. Chenesseau, P. D. du Rau, N. Drouet-Hoguet, C. Duchamp, J. Steinmetz, J.-M. Vandel, and O. Gimenez. 2023. Bringing circuit theory into spatial occupancy models to assess landscape connectivity. bioRxiv.
 
 \bibitem[\citeproctext]{ref-Kery2008}
-Kéry, M., and B. Schmidt. 2008. Imperfect detection and its consequences for monitoring in conservation. Community Ecology - COMMUNITY ECOL 9:207--216.
+Kéry, M., and B. Schmidt. 2008. Imperfect detection and its consequences for monitoring in conservation. Community Ecology 9:207--216.
 
 \bibitem[\citeproctext]{ref-Lahoz2014}
 Lahoz-Monfort, J. J., G. Guillera-Arroita, and B. A. Wintle. 2014. Imperfect detection impacts the performance of species distribution models. Global Ecology and Biogeography 23:504--515.
+
+\bibitem[\citeproctext]{ref-Lu2024}
+Lu, X., Y. Kanno, G. P. Valentine, J. M. Rash, and M. B. Hooten. 2024. Using multi-scale spatial models of dendritic ecosystems to infer abundance of a stream salmonid. Journal of Applied Ecology 61:1703--1715.
 
 \bibitem[\citeproctext]{ref-mackenzie2017}
 MacKenzie, D. I., J. D. Nichols, J. A. Royle, K. H. Pollock, L. L. Bailey, and J. E. Hines. 2017. Occupancy {Estimation} and {Modeling}: {Inferring Patterns} and {Dynamics} of {Species Occurrence}. {Elsevier}.
 
 \bibitem[\citeproctext]{ref-Northrup2018}
-Northrup, J., and B. Gerber. 2018. A comment on priors for bayesian occupancy models. PLOS ONE 13:e0192819.
+Northrup, J., and B. Gerber. 2018. A comment on priors for {B}ayesian occupancy models. Plos One 13:e0192819.
 
 \bibitem[\citeproctext]{ref-Peterson2010}
 Peterson, E. E., and J. M. V. Hoef. 2010. A mixed-model moving-average approach to geostatistical modeling in stream networks. Ecology 91:644--651.

@@ -73,12 +73,6 @@ cleanbib()
 cite_options(citation_format = "pandoc")
 ```
 
-<!-- Sami Domisch -->
-<!-- Alfred Burian -->
-<!-- Guillaume Blanchet -->
-<!-- Richard Chandler -->
-<!-- Dana Morin -->
-<!-- Jérôme Guélat -->
 
 # Introduction
 
@@ -204,6 +198,8 @@ could be the topic of future research in the context of
 occupancy modeling and spatial modeling in general.
 
 From Rushing paper. The distributions of most species are characterized by complex and dynamic variation in occurrence. Species distribution modeling seeks to relate this variation to environmental covariates and extrapolate these relationships to unsampled sites and times. Because habitats and species-habitat relationships change across both space and time, conventional GLM-based models rarely capture the inherent complexity of species distributions, especially when inferences are made across large spatial or long temporal scales. Here, we demonstrate a novel occupancy-based SDM that combines environmental predictors with a spatial GAM to model covariate relationships and complex, non-linear spatial variation in occupancy probability while accounting for imperfect detection.
+
+Acknowledge similar approach for count data by [@Lu2024].
 
 # Acknowledgments
 
