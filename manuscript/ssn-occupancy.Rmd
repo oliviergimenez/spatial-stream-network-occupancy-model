@@ -190,7 +190,7 @@ Acknowledge similar approach for count data by [@Lu2024].
 
 # Acknowledgments
 
-Jay Ver Hoef, Edgar Santos Fernández and Maëlis Kervellec.
+I would like to warmly thank Jay Ver Hoef and Edgar Santos Fernández for useful discussions on spatial stream network models. I also thank Maëlis Kervellec for sharing her code to wrangle the European otter data.
 
 # Ethics and Integrity statements
 
