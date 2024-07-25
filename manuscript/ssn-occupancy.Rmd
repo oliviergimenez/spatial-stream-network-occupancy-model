@@ -76,23 +76,25 @@ cite_options(citation_format = "pandoc")
 
 # Introduction
 
-Streams and rivers provide essential habitats for numerous species of animals and plants, many of which are endemic [@D2006; @Reid2019]. The ecological health of these freshwater ecosystems is paramount not only for the biodiversity they harbor but also for the ecosystem services they provide, which are indispensable to both wildlife and human populations [@V2022]. However, human activities are altering the natural conditions of streams, rivers and their associated riparian habitats, jeopardizing the persistence of these ecosystems [@A2020].
+Streams and rivers provide essential habitats for numerous species of animals and plants [@Reid2019]. The ecological health of these freshwater ecosystems is paramount not only for the biodiversity they harbor but also for the ecosystem services they provide, which are indispensable to both wildlife and human populations [@V2022]. However, human activities are altering the natural conditions of streams, rivers, and their associated riparian habitats, jeopardizing the persistence of these ecosystems [@A2020].
 
-In that context, species distribution models (SDMs) are essential tools in understanding and preserving biodiversity [@Elith2009]. SDMs predict the distribution of species, helping scientists and conservationists identify critical habitats and biodiversity hotspots. SDMs also inform strategies aimed at mitigating impacts of climate and land-use changes, manage invasive species or enhancing habitat connectivity in freshwater ecosystems [@D2015].
+In this context, species distribution models (SDMs) are essential tools in understanding and preserving biodiversity [@Elith2009]. SDMs predict the distribution of species, helping scientists and conservationists in identifying critical habitats and biodiversity hotspots. Additionally, SDMs inform strategies aimed at mitigating the impacts of climate and land-use changes, managing invasive species, and enhancing habitat connectivity in freshwater ecosystems [@D2015].
 
-SDMs are known to be affected by two main issues, namely imperfect detection and spatial autocorrelation [@GK2018]. First, a species present in a given area may go undetected during surveys due to various factors such as observer experience, species behavior, and environmental conditions. Ignoring *imperfect detection* can lead to biased estimates of species distribution, and flawed inference about the relationship between species presence and environmental factors [@Kery2008; @Lahoz2014], potentially misinforming conservation strategies and habitat management decisions. To address this issue, occupancy models are SDMs that rely on repeated visits of spatial sampling units for inferring distribution [@mackenzie2017]. These models have been widely used in freshwater ecosystems for various taxa [@Charbonnel2022; @Hamer2021; @Wedderburn2022; @Preece2021]. Second, SDMs rely on the assumption of independent residuals, which may be violated if sampling sites that are close together tend to have similar probabilities of species presence. Ignoring *spatial autocorrelation* can lead to biased estimates of species distribution, and can inflate the probability of erroneously detecting the effect of environmental covariates [@Dormann2007]. Several extensions of occupancy models have been proposed to account for spatial autocorrelation, building on the spatial statistics literature, e.g. conditional autoregressive models [@Broms2014; @Johnson2013] and geoadditive models [@Rushing2019]. However, these models rely on the Euclidean distance between the spatial sampling units, which does not acknowledge the spatial structure in networks of streams and rivers.
+Species Distribution Models (SDMs) are influenced by two main issues: imperfect detection and spatial autocorrelation [@GK2018]. First, imperfect detection occurs when a species present in a given area may not be detected during surveys due to factors such as observer experience, species behavior, and environmental conditions. If imperfect detection is ignored, it can lead to biased estimates of species distribution and flawed inferences about the relationship between species presence and environmental factors [e.g., @Lahoz2014]. This can misinform conservation strategies and habitat management decisions. To address this issue, occupancy models are SDMs that rely on repeated visits of spatial sampling units for inferring distribution [@mackenzie2017]. These models have been widely used in freshwater ecosystems for various taxa [@Charbonnel2022; @Wedderburn2022; @Preece2021]. 
 
-Here I propose spatial occupancy models that allow spatial autocorrelation structured according to stream flow and flow connectivity [@Peterson2013]. I build on the linear mixed modelling approach proposed by [@VerHoef2010; @Peterson2010], which allows considering a mixture of distance-based spatial correlation structures (Euclidean or not) in a single model. I plug-in this variance component approach into occupancy models using a Bayesian approach. I present the statistical developments of the model, and I illustrate the approach on a semi-aquatic mammal in French streams and rivers. 
+Second, SDMs rely on the assumption of independent residuals. This assumption may be violated if nearby sampling sites tend to have similar probabilities of species presence, leading to biased estimates of species distribution and potentially inflating the effects of environmental factors [@Dormann2007]. Several extensions of occupancy models have been proposed to account for spatial autocorrelation, building on the spatial statistics literature, e.g. conditional autoregressive models [@Johnson2013] and geoadditive models [@Rushing2019]. However, these models rely on the Euclidean distance between the spatial sampling units, which does not acknowledge the spatial structure in networks of streams and rivers.
+
+Here I propose spatial occupancy models that account for spatial autocorrelation based on stream flow and connectivity [@Peterson2013]. I build on the linear mixed modelling approach developed by @VerHoef2010 and @Peterson2010, which integrates various distance-based spatial correlation structures (both Euclidean and non-Euclidean) within a single model. I plug-in this variance component approach into occupancy models using a Bayesian approach. A similar approach was recently undertaken by @Lu2024 for count data to estimate abundance. Below I outline the statistical developments of this model and demonstrate its application to a semi-aquatic mammal in French streams and rivers. 
 
 # Methods
 
 ## Occupancy models
 
-To account for imperfect detection, I use occupancy models that allow inferring the actual species distribution [@mackenzie2017]. We assume the monitoring of a species occurs over $S$ spatial sampling units, or *sites*. If detection was perfect, the state $z_i$ of a site $i$ would be a Bernoulli random variable taking value 1 with *occupancy probability* $\psi_i$ if the site was occupied, and 0 otherwise with probability $1-\psi$. However, the ecological process of state occupancy $z_i$ is only partially known, because the species may go undetected whereas actually present of that site $i$. Therefore we need to consider the observation process, also a Bernoulli random variable, on top of the ecological process. When the species is detected on site $i$, say $y_i = 1$ with *detection probability* $p$, then that site is occupied, whereas if the species goes undetected with probability $1-p$, i.e. $y_i = 0$, we simply do not know whether the site is occupied or not. Both parameters, $\psi$ and $p$, can be modeled as functions of explanatory spatial variables, in the spirit of generalized linear models and logistic regressions. The only requirement to separately estimate the occupancy and detection probabilities is to collect data in at least two independent visits in time for a number of sites, and this temporal replication should be over a short period so that sites remain in the same state. 
+To address imperfect detection, I use occupancy models to estimate the true species distribution [@mackenzie2017]. In these models, monitoring occurs across $S$ spatial sampling units, or sites. If detection was perfect, the state $z_i$ of a site $i$ would be a Bernoulli random variable, taking value 1 with occupancy probability $\psi_i$ if the site was occupied, and 0 otherwise with probability $1-\psi$. However, because the ecological process of state occupancy $z_i$ is only partially observable (since the species might be present but undetected), we must also account for the observation process, which is also modeled as a Bernoulli random variable. When the species is detected at site $i$, i.e. $y_i = 1$, with detection probability $p$, it confirms that the site is occupied. Conversely, if the species is not detected, i.e. $y_i = 0$, with probability $1-p$, we cannot determine whether the site is occupied or not. Both parameters, $\psi$ and $p$, can be modeled as functions of explanatory spatial variables, in the spirit of generalized linear models and logistic regressions for example. To estimate occupancy and detection probabilities separately, data should be collected from at least two independent visits to each site within a short period, ensuring that sites remain in the same state.
 
 ## Spatial autocorrelation for stream networks
 
-How is spatial autocorrelation accounted for in occupancy models? The usual way is to write the probabilities of occupancy $\boldsymbol{\psi} = (\psi_1, \ldots, \psi_S)$ on some scale, say the logit scale, as a function of explanatory variables gathered in a matrix $\mathbf{X}$ with corresponding regression parameters $\boldsymbol{\beta}$ to be estimated, and add a random effect $\boldsymbol{\epsilon}$ to capture spatial autocorrelation [@GK2018]: 
+How is spatial autocorrelation accounted for in occupancy models? The usual way is to write the probabilities of occupancy $\boldsymbol{\psi} = (\psi_1, \ldots, \psi_S)$ on some scale, say the logit scale, as a function of explanatory variables gathered in a matrix $\mathbf{X}$ with corresponding regression parameters $\boldsymbol{\beta}$ that need to be estimated. To account for spatial autocorrelation, a random effect $\boldsymbol{\epsilon}$ is added to the model, which captures the spatial dependencies among sites [@GK2018]:
 
 ```{=tex}
 \begin{equation*}
@@ -100,7 +102,7 @@ How is spatial autocorrelation accounted for in occupancy models? The usual way 
 \end{equation*}
 ```
 
-The random effect $\boldsymbol{\epsilon}$ can be structured using a conditional autoregressive models and its extensions [@Johnson2013] or geoadditive models [@Rushing2019]. Whatever the method, the proximity among sites is assessed using the Euclidean distance, which fails to adequately capture complex spatial dependencies in streams and rivers. Specifically, we are interested in flow connectivity and stream and river topology [@Peterson2013]. Following [@VerHoef2010; @Peterson2010], I consider two sites as being *flow-connected* when water flows from an upstream site to a downstream site, and *flow-unconnected* when they share a common confluence downstream but do not share flow. Then I parameterize occupancy by rewriting the random effect as a mixture of four components as follows: 
+The random effect $\boldsymbol{\epsilon}$ can be structured using methods such as conditional autoregressive models and their extensions [@Johnson2013], or geoadditive models [@Rushing2019]. However, these approaches typically rely on Euclidean distance to assess proximity among sites, which may not fully capture the complex spatial dependencies present in streams and rivers. Specifically, we are interested in flow connectivity and the topology of streams and rivers [@Peterson2013]. Following @VerHoef2010 and @Peterson2010, I define two sites as flow-connected if water flows from an upstream site to a downstream site, and as flow-unconnected if they share a common confluence downstream but do not directly share flow. Then I parameterize occupancy by rewriting the random effect as a mixture of four components as follows: 
 
 ```{=tex}
 \begin{equation*}
@@ -108,89 +110,53 @@ The random effect $\boldsymbol{\epsilon}$ can be structured using a conditional 
 \end{equation*}
 ```
 
-where $\boldsymbol{\tau}_{tu}$ is a random effect with spatial covariance between flow-connected sites that can occur in the same direction of the river flow (*tail-up*, think of organisms that move passively like, e.g., mussels), $\boldsymbol{\tau}_{td}$ is a random effect with spatial covariance between flow-connected and flow-unconnected sites that can occur with or against the direction of the flow (*tail-down*, think of organisms that move actively like, e.g., semi-aquatic mammals), $\boldsymbol{\tau}_{eu}$ is a random effect with a spatial covariance independent of the network topology (generated by, e.g., air temperature or precipitation), and $\boldsymbol{\epsilon}$ is a random effect which variance, often called the nugget, can absorb extra-variability. Writing these covariance components is described in details elsewhere: Appendix B in [@Peterson2010], [@isaak2014applications]. I provide an example in the next section. 
+where $\boldsymbol{\tau}_{tu}$ is a random effect with spatial covariance between flow-connected sites that can occur in the same direction of the river flow (tail-up), which is suitable for organisms that move passively, such as mussels), $\boldsymbol{\tau}_{td}$ is a random effect with spatial covariance between flow-connected and flow-unconnected sites, which can occur with or against the direction of flow (tail-down), applicable to organisms that move actively, such as semi-aquatic mammals, $\boldsymbol{\tau}_{eu}$ is a random effect with a spatial covariance independent of the network topology, influenced by factors like air temperature or precipitation, and $\boldsymbol{\epsilon}$ is a random effect with variance, often referred to as the nugget, which accounts for  additional variability. How to build these covariance components is described in details elsewhere [e.g., @VerHoef2019], and I provide an example in the next section.  
 
 ## Case study
 
-To illustrate the new approach, I investigated the effect of human disturbance on the European otter (*Lutra lutra*) occupancy in France. The otter is a semi-aquatic mammal that went almost extinct in the 20th century in France due to heavy hunting for its fur. Thanks to the banning of hunting and its protection, the species is now recolonizing the country, and the ecological question is to assess its current distribution. Detection and non-detection data were collected in 2003-2005 in the Midi-Pyrénées region (see panel a) in Fig. \@ref(fig:mainfig)). Observers searched for signs of otter presence at a small river catchment scale which was considered as a spatial sampling units. These data were analyzed in [@Couturier2024] who found an effect of human density and the proportion of cultivated area on occupancy. I consider here a subsample of this dataset covering $S = 56$ sites in the Lot, Aveyron and Cantal counties that were visited 3 times (see panel b) in Fig. \@ref(fig:mainfig)). I used human population density as a proxy for human disturbance. It was calculated as the number of inhabitants per km2 in a 200-m buffer area surrounding each stream (see panel c) in Fig. \@ref(fig:mainfig)). I also considered the proportion of cultivated areas as an explanatory variable.
-
-I use tail-down only. Exponential structure, with decreasing correlation with increasing distance. Ecrire le modèle ici avec l'exponentielle:
+To illustrate the new approach, I investigated the impact of human disturbance on the occupancy of European otter (*Lutra lutra*) in France. The otter, a semi-aquatic mammal, faced near extinction in the 20th century in France due to extensive hunting for its fur. With hunting bans and protection efforts, the species is now recolonizing the country, and the ecological question is assessing its current distribution. Data on otter detection and non-detection were collected in 2003-2005 in the Midi-Pyrénées region (see panel a in Fig. \@ref(fig:mainfig)). Observers searched for signs of otter presence at a small river catchment scale, which was used as the spatial sampling unit. These data were analyzed by @Couturier2024, who found that human density and the proportion of cultivated area influenced occupancy. In this study, I focus on a subsample of this dataset, covering $S = 56$ sites in the Lot, Aveyron and Cantal counties, which were visited 3 times (see panel b in Fig. \@ref(fig:mainfig)). I used human population density as a proxy for human disturbance, calculated as the number of inhabitants per km2 within a 200-m buffer around each stream (see panel c in Fig. \@ref(fig:mainfig)). Additionally, I considered the proportion of cultivated areas as an explanatory variable. Detection was considered as constant. Regarding spatial autocorrelation, since otters can move both downstream and upstream, I used a tail-down model $$\text{logit}(\boldsymbol{\psi}) = \mathbf{X} \boldsymbol{\beta} +\boldsymbol{\tau}_{td}$$ with a exponential covariance:
 
 \[
-    \text{Cov}(\epsilon_i,\epsilon_j)= 
+    \text{Cov}(\tau_{i},\tau_{j})=
 \begin{cases}
-    \displaystyle{\sigma^2\exp(-d_{ij}/\theta)},& \text{if sites } i \text{ and } j \text{ are connected }\\
-    0,              & \text{otherwise}
+    \displaystyle{\sigma^2\exp(-h/\theta)},& \text{if sites } i \text{ and } j \text{ are flow-connected }\\
+    \displaystyle{\sigma^2\exp(-(a+b)/\theta)},& \text{if sites } i \text{ and } j \text{ are flow-unconnected }\\
 \end{cases}
 \]
 
-Expliquer les paramètres d, s et theta. S'assurer que ce sont les mêmes que je donne dans les résultats, et la figure des posterior distributions. 
+where I dropped the $td$ notation in $\tau_{td}$ for clarity, $h$ is the stream distance between sites $i$ and $j$, $b$ denotes the longer of the distances to the common downstream junction, $a$ denotes the shorter of the two distances, $\sigma^2$ is a variance parameter usually referred to as the partial sill and $\theta$ is a range parameter [see Apendix A in @Peterson2010].
 
 ## Implementation
 
-For all analyses, I used the statistical language `R` `r citep(citation())`. I used the `openSTARS` [@Kattwinkel2020] and `SSN` [@VerHoef2014] packages to build and characterize the network and calculate hydrological distances. I fitted models in the Bayesian framework by specifying weakly informative priors [@Northrup2018], implementing a marginalized likelihood [@clark2019] and using the `rstan` `r citep(citation("rstan"))` package. I ran two chains for a total of 15,000 iterations with a burn-in of 5,000 iterations. I assessed model convergence on R-hat values (< 1.05), effective sample size (> 100), and visual inspection of the trace plots. I provide additional information in the Supporting information.
+For all analyses, I used the statistical language `R` `r citep(citation())`. I used the `openSTARS` [@Kattwinkel2020] and `SSN` [@VerHoef2014] packages to build and characterize the network and calculate hydrological distances. I fitted models within the Bayesian framework, specifying weakly informative priors [@Northrup2018], implementing a marginalized likelihood [@clark2019], and using the `rstan` `r citep(citation("rstan"))` package. I ran two chains for a total of 15,000 iterations with a burn-in of 5,000 iterations. For simplicity, I summarized posterior distributions with posterior mean and 95\% credible intervals. I assessed model convergence using R-hat values (< 1.05), effective sample size (> 100), and visual inspection of the trace plots. I provide additional information in the code available at [https://github.com/oliviergimenez/spatial-stream-network-occupancy-model](https://github.com/oliviergimenez/spatial-stream-network-occupancy-model). 
 
-# Results
+# Results and discussion
 
-Detection was < 1. When spatial autocorrelation is ignored, we found a negative effect of human density on occupancy probability. However, when we accounted for spatial autocorrelation using our new model, human density had no longer an effect on occupancy. Provide density of posterior distributions.
+Here, I provide the parameter estimates from the new model accommodating spatial autocorrelation, unless otherwise specified. Detection probability was less than one, estimated at 0.71 (0.59, 0.80). The proportion of cultivated area had no effect, with a slope estimated at 0.60 (-0.67, 1.96). Population density also had no effect on occupancy probability, with a slope estimated at -0.96 (-2.24, 0.17). However, I did find a negative effect when spatial autocorrelation was ignored, with a slope estimated at -1.10 (-1.99, -0.34). This latter result aligns with a previous analysis of a more extensive dataset [@Couturier2024] that also ignored spatial autocorrelation, in areas highly connected to otter-occupied catchments.
 
-With: slope agricultural 0.60 (-0.67, 1.96), pop density -0.96 (-2.24, 0.17), p 0.71 (0.59, 0.80)
-Without: slope pop density  -1.10 (-1.99, -0.34)
+As anticipated, the effect size of human density increased when spatial autocorrelation was ignored. The most likely explanation for this is a bias due to an omitted variable. There is spatial autocorrelation in human density (see panel c in Fig. \@ref(fig:mainfig)), which inflates its effect size; this bias is controlled for when spatial autocorrelation is included in the model. There may be spatial variation in occupancy probabilities attributable to another variable that needs to be accounted for.
 
-# Discussion
+Two short-term perspectives arise from this work. From a methodological perspective, the new approach could be extended to multi-season occupancy models, enabling the modeling of colonization probability as a function of distance to habitat features that may impede species movement. This would facilitate the quantification of landscape connectivity in freshwater ecosystems [@Kervellec2023]. Such development requires moving to spatio-temporal models for stream and river data, which have recently become avaible [@Santos2022]. From an ecological perspective, the new approach presents significant potential for the analysis of environmental DNA (eDNA). The eDNA methodology offers substantial promise for the non-invasive monitoring of biodiversity in freshwater ecosystems [@Carraro2020]. While spatial stream network models have been employed to analyze eDNA data [@Winkowski2024], these models have overlooked the issue of imperfect detection. Previous studies have recognized occupancy models as effective tools for eDNA data analysis [@Burian2021], with some considering spatial autocorrelation [@Chen2019], however they have yet to integrate spatial stream networks. The new approach addresses this gap by incorporating both imperfect detection and spatial stream networks.
 
-## Ecological results
+<!-- Say something about spatial confusion? See paper by Hodges and Reich 2010.  -->
+<!-- Also refer to our exchanges w/ Jay VerHoef on the difficulty in estimating the sill parameters, which fortunately does not affect the estimation of the effect of explanatory variable, or predicted occupancy.  -->
+<!-- From Johnson et al. 2013 in Ecology. By exploiting autocorrelation when present, one can potentially decrease the number  -->
+<!-- of visits to specific survey units within a study area, instead relying on spatial dependence to take the place of some temporal -->
+<!-- replication. Also: The issue of spatial confounding is relatively new in the statistics literature. As Hodges and Reich (2010) state,  -->
+<!-- it is a ‘‘rich area of research.’’ Experienced spatial modelers might say that confounding is desirable as it allows an adjustment  -->
+<!-- in fixed effects inference due to unmeasured (unknown), spatially correlated covariates. However, Hodges, Hodges and Reich (2010)  -->
+<!-- and Paciorek (2010) illustrate bias and variance inflation depend on the structure of these unmeasured variables. -->
+<!-- Because the structure of these latent spatial variables is unknown, a spatial model may not account for them the -->
+<!-- way the researcher intends. Hodges and Reich (2010) note that without knowledge of the missing structure, -->
+<!-- purposefully adding spatial confounding is a haphazard adjustment that may bias the known fixed effects in -->
+<!-- unknown ways. There may be some middle ground, however, that is worth exploring (Paciorek 2010) and -->
+<!-- could be the topic of future research in the context of occupancy modeling and spatial modeling in general. -->
 
-The effect size of human density increases when spatial autocorrelation is ignored. 
-
-The most likely explanation is that of a bias due to an omitted variable. 
-Human density is spatially correlated, and its effect size is inflated. 
-This bias is controlled when spatial autocorrelation is included.
-There is probably a difference in occupancy according to another variable that would need to be accounted for.
-
-Our results showed that the proportion of cultivated area has a strong negative impact on both initial otter occupancy and colonization for areas that lack connectivity. In our study area, cultivated areas mainly consist of highly productive field crops (e.g. cereals, oilseeds) and to a lesser extent orchards and vineyards. These crops are locally managed with a high level of intensity (Rega et al., 2020). We thus assume that the proportion of cultivated area is a good proxy of intensification of land management in our study area.
-
-We also found a negative effect of human density on initial occupancy probability in areas highly connected to otter-occupied catchments, suggesting that in the core area of their distribution, otter populations are negatively impacted by human disturbance. The impact of human disturbance on otter populations has also been shown in several European areas. Human density can lead to direct disturbance of otters, as well as indirect disturbance through simplification of riparian vegetation, habitat reclamation for urbanized areas, roadkilling etc. (Ottaviani et al., 2009; Dettori et al., 2021). More unexpectedly, we found a positive relationship (but with high confidence intervals) between human density and initial occupancy probability where occupied sites were isolated. Instead of ecological reasons, we suspect this result to be linked to spurious correlations or other methodological artefacts.
-
-Ecologically, omitted bias variable. Check in Couturier which one it could be. Citer quand même le papier de Hodges sur spatial confusion. Citer aussi les échanges avec Jay VerHoef pour la difficulté in estimating le sill parameter. Mais ok pour covariate et prediction de l'occupancy. 
-
-## Perspectives
-
-1. Extension à dynamic occupancy models. Colonization function of distance to features that hamper movement of individuals. Citer les papier de Chandler, Morin et celui à paraître de Kervellec. L'idée est qu'on pourrait regarder la question de la connectivité dans river et stream network. Pas super compliqué, le papier du portuguais a paved the road. Extending to dynamic occupancy to write the probability of colonization as a function of distance to landscape features that might hamper movements, and therefore assessing connectivity. [@Kervellec2023]
-
-2. Application à eDNA. Alors besoin peut-être d'autres termes spatiaux comme tail-up, et euclidean. Ici on a utilisé que tail-down car on s'interesse aux otters. eDNA important pour monitor biodiv in freshwater and marine realms. If false positives wored out (voir work de E. Matechou), resste à proprement prendfre en compte spatial autocorrelation. 
-
-## Conclusion
-
-From paper by Johnson. By exploiting autocorrelation when present, one can potentially decrease the number of visits to specific survey units
-within a study area, instead relying on spatial dependence to take the place of some temporal replication.
-ALSO. The issue of spatial confounding is relatively new in
-the statistics literature. As Hodges and Reich (2010)
-state, it is a ‘‘rich area of research.’’ Experienced spatial
-modelers might say that confounding is desirable as it
-allows an adjustment in fixed effects inference due to
-unmeasured (unknown), spatially correlated covariates.
-However, Hodges, Hodges and Reich (2010) and
-Paciorek (2010) illustrate bias and variance inflation
-depend on the structure of these unmeasured variables.
-Because the structure of these latent spatial variables is
-unknown, a spatial model may not account for them the
-way the researcher intends. Hodges and Reich (2010)
-note that without knowledge of the missing structure,
-purposefully adding spatial confounding is a haphazard
-adjustment that may bias the known fixed effects in
-unknown ways. There may be some middle ground,
-however, that is worth exploring (Paciorek 2010) and
-could be the topic of future research in the context of
-occupancy modeling and spatial modeling in general.
-
-From Rushing paper. The distributions of most species are characterized by complex and dynamic variation in occurrence. Species distribution modeling seeks to relate this variation to environmental covariates and extrapolate these relationships to unsampled sites and times. Because habitats and species-habitat relationships change across both space and time, conventional GLM-based models rarely capture the inherent complexity of species distributions, especially when inferences are made across large spatial or long temporal scales. Here, we demonstrate a novel occupancy-based SDM that combines environmental predictors with a spatial GAM to model covariate relationships and complex, non-linear spatial variation in occupancy probability while accounting for imperfect detection.
-
-Acknowledge similar approach for count data by [@Lu2024].
+<!-- From Rushing et al. 2019 in Scientific Reports. The distributions of most species are characterized by complex and dynamic variation in occurrence. Species distribution modeling seeks to relate this variation to environmental covariates and extrapolate these relationships to unsampled sites and times. Because habitats and species-habitat relationships change across both space and time, conventional GLM-based models rarely capture the inherent complexity of species distributions, especially when inferences are made across large spatial or long temporal scales. Here, we demonstrate a novel occupancy-based SDM that combines environmental predictors with a spatial GAM to model covariate relationships and complex, non-linear spatial variation in occupancy probability while accounting for imperfect detection. -->
 
 # Acknowledgments
 
-I would like to warmly thank Jay Ver Hoef and Edgar Santos Fernández for useful discussions on spatial stream network models. I also thank Maëlis Kervellec for sharing her code to wrangle the European otter data.
+I would like to warmly thank Jay Ver Hoef and Edgar Santos Fernández for useful discussions on spatial stream network models. I also thank Maëlis Kervellec for sharing her code to wrangle the otter data.
 
 # Ethics and Integrity statements
 
@@ -223,7 +189,7 @@ write.bibtex(file = "knitcitations.bib")
 
 \blandscape
 
-```{r mainfig, out.width="98%", fig.align='center', fig.pos='b', fig.cap="Second figure in landscape format."}
+```{r mainfig, out.width="98%", fig.align='center', fig.pos='b', fig.cap="Information on the otter data. In panel a), the study area is given in a grey rectable on a map of France. In panel b) the number of detections is given on a map of the study area. In panel c) the human population density is represented on a map of the study area, in number of inhabitants per km2."}
 include_graphics("mainfigure.png")
 ```
 
