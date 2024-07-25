@@ -1,4 +1,6 @@
-#--- load libraries
+#----------------------#
+#--- load libraries ---#
+#----------------------#
 
 library(SSN2) # spatial modeling on stream networks
 library(tidyverse) # importing, tidying, manipulating, and visualizing data
@@ -9,34 +11,11 @@ library(geodata) # downloading geographic data
 library(ggspatial) # interacting with spatial data using ggplot2
 library(rmapshaper) # wrapping the mapshaper javascript library to simplify spatial object
 
-#--- references for packages not cited in manuscript
+#----------------------------------#
+#--- wrangle and visualize data ---#
+#----------------------------------#
 
-# SSN2: 
-#   Dumelle M, Peterson, E, Ver Hoef JM, Pearse A, Isaak D (2023). SSN2: Spatial Modeling on Stream Networks in R. R package version 0.1.0
-#
-# tidyverse: 
-#   Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache
-#   SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). Welcome to the tidyverse.
-#   Journal of Open Source Software, 4(43), 1686. doi:10.21105/joss.01686 <https://doi.org/10.21105/joss.01686>.
-#
-# sf: 
-#  Pebesma, E., & Bivand, R. (2023). Spatial Data Science: With Applications in R. Chapman and Hall/CRC. https://doi.org/10.1201/9780429459016
-#  Pebesma, E., 2018. Simple Features for R: Standardized Support for Spatial Vector Data. The R Journal 10 (1), 439-446, https://doi.org/10.32614/RJ-2018-009
-#
-# bayesplot:
-#   Gabry J, Mahr T (2022). “bayesplot: Plotting for Bayesian Models.” R package version 1.10.0, <https://mc-stan.org/bayesplot/>.
-#   Gabry J, Simpson D, Vehtari A, Betancourt M, Gelman A (2019). Visualization in Bayesian workflow. J. R. Stat. Soc. A, 182, 389-402. doi:10.1111/rssa.12378 <https://doi.org/10.1111/rssa.12378>.
-#
-# geodata: 
-#   Hijmans RJ, Barbosa M, Ghosh A, Mandel A (2024). _geodata: Download Geographic Data_. R package version 0.6-2, <https://CRAN.R-project.org/package=geodata>.
-#
-# ggspatial:
-#   Dunnington D (2023). _ggspatial: Spatial Data Framework for ggplot2_. R package version 1.1.8, <https://CRAN.R-project.org/package=ggspatial>.
-#
-# rmapshaper: citation("rmapshaper")
-#   Teucher A, Russell K (2023). _rmapshaper: Client for 'mapshaper' for 'Geospatial' Operations_. R package version 0.5.0, <https://CRAN.R-project.org/package=rmapshaper>.
-
-#--- get occupancy data
+# get occupancy data
 
 sites_occ <- st_read("data/shp/sites.shp")
 mask <- c(25:71,73:81) # take single watershed
@@ -46,7 +25,7 @@ y2003 <- cbind(dat$CONTACT_1,
                dat$CONTACT_2,
                dat$CONTACT_3)
 
-#--- get network data
+# get network data
 
 network <- ssn_import(
   path = 'data/nc.ssn',
@@ -54,12 +33,12 @@ network <- ssn_import(
 )
 
 load("data/mat_all.RData")
-flow_con_mat <- mat_all$flow.con.mat #flow connected matrix
-D <- mat_all$D #downstream hydro distance matrix
+flow_con_mat <- mat_all$flow.con.mat # flow connected matrix
+D <- mat_all$D # downstream hydro distance matrix
 h <- mat_all$H # total stream distance
-alpha_max <- 4 * max(mat_all$H)
+alpha_max <- 4 * max(mat_all$H) # upper bound for scale parameter
 
-#--- visualize data
+# visualize data
 
 # 0. france
 
@@ -85,7 +64,6 @@ p1 <- ggplot(data = france) +
   theme(legend.text = element_text(size = 30))
 
 ggsave("outputs/france.png", dpi = 600, width = 15, height = 15)
-
 
 # 1. locations
 
@@ -137,15 +115,10 @@ p3 <- ggplot() +
 
 ggsave("outputs/density.png", dpi = 600, width = 15, height = 10)
 
-# arrange plots
+#-----------------------------------------------------------------#
+#--- write model with Stan code / WITH spatial autocorrelation ---#
+#-----------------------------------------------------------------#
 
-library(cowplot)
-right_column <- plot_grid(p2, p3, labels = c("b", "c"), ncol = 1, label_size = 12)
-final_plot <- plot_grid(p1, right_column, labels = c("a", ""), label_size = 12)
-
-ggsave("outputs/figure1.png", dpi = 600, width = 15, height = 10)
-
-#--- write model with Stan code
 # freely inspired from 
 # https://peter-stewart.github.io/blog/gaussian-process-occupancy-tutorial/ for the occupancy component and
 # https://github.com/EdgarSantos-Fernandez/SSNbayes/blob/main/R/all_func.R for the spatial component
@@ -169,8 +142,8 @@ functions{
 }
 
 data{
-  int nsite; // Number of sites
-  int nrep; // Number of visits
+  int nsite; // number of sites
+  int nrep; // number of visits
   array[nsite, nrep] int y; // det/non-det data
   array[nsite, nrep] int sampled; // indicator for whether site is sampled or not (NA)
   vector[nsite] agr; // covariate agr
@@ -185,17 +158,17 @@ parameters{
   real betaagr; // slope 
   real betapop; // slope 
   real k_bar; // intercept
-  real <lower=0, upper = 1> p; // detection ptob
+  real <lower=0, upper = 1> p; // detection probability
   real<lower=0> sigma_td; // sd of tail-down
   real<lower=0> alpha_td; // range of the tail-down model
   vector[nsite] z; // z-scores for intercept term (for non-centred parameterisation)
 }
 
 transformed parameters{
-  vector[nsite] psi; // Probability of occurrence at each site i
-  matrix[nsite, nsite] logSIGMA; // Covariance matrix
-  matrix[nsite, nsite] SIGMA; // Covariance matrix
-  matrix[nsite, nsite] L_SIGMA; // Cholesky
+  vector[nsite] psi; // probability of occurrence at each site i
+  matrix[nsite, nsite] logSIGMA; // covariance matrix
+  matrix[nsite, nsite] SIGMA; // covariance matrix
+  matrix[nsite, nsite] L_SIGMA; // Cholesky decomposition
   vector[nsite] k; // perturbation from k_bar
   logSIGMA = cov_ssn(h, D, flow_con_mat, sigma_td, alpha_td);
   for(isite in 1:nsite){
@@ -208,13 +181,12 @@ transformed parameters{
   for(isite in 1:nsite){
     psi[isite] = inv_logit(k_bar + k[isite] + betaagr * agr[isite] + betapop * pop[isite]);
   }
-
 }
 
 model{
 
-  vector[nsite] log_psi; // Log of psi
-  vector[nsite] log1m_psi; // Log of 1-psi
+  vector[nsite] log_psi; // log of psi
+  vector[nsite] log1m_psi; // log of 1-psi
 
   // Priors
   betaagr ~ normal(0, 1.5);
@@ -222,7 +194,7 @@ model{
   k_bar ~ normal(0, 1.5);
   z ~ normal(0, 1);
   sigma_td ~ uniform(0, 5); // sd tail-down, partial sill
-  alpha_td ~ uniform(0, alpha_max); // prior range // uniform(0, alpha_max);
+  alpha_td ~ uniform(0, alpha_max); // prior range
 
   // Likelihood
   for(isite in 1:nsite){
@@ -236,11 +208,11 @@ model{
     } else {
       target += log_sum_exp(lp_if_present, log1m(psi[isite]));
     }
-  }// end likelihood contribution
+  }
 }
 "
 
-#--- prepare data
+# prepare data
 agr <- as.vector(scale(dat$P100ZTC))
 pop <- as.vector(scale(log(dat$ZT200_K + 1)))
 y2003woNA <- y2003
@@ -279,19 +251,19 @@ fit <- stan(model_code = ssnlogistic,
             seed = seed)
 
 # run convergence diagnostics
-rstan::check_hmc_diagnostics(fit)
+check_hmc_diagnostics(fit)
 
 # visualize pairs plots
 pairs(fit, pars = c("sigma_td", "alpha_td", "k_bar","betaagr","betapop","p"))
 
 # get trace plots
-rstan::traceplot(fit, pars = c("sigma_td", "alpha_td", "k_bar","betaagr","betapop","p"))
+traceplot(fit, pars = c("sigma_td", "alpha_td", "k_bar","betaagr","betapop","p"))
 
 # calculate numerical summaries
 stats <- data.frame(summary(fit)$summary)
 round(stats,2)
 
-#               mean  se_mean     sd       X2.5.     X25.      X50.      X75.     X97.5. n_eff      Rhat
+#               mean  se_mean     sd       X2.5.     X25.      X50.      X75.      X97.5. n_eff   Rhat
 # sigma_td      3.26    0.03      1.10     1.01      2.45      3.36      4.17       4.92 1210.86    1
 # alpha_td 538397.22 9286.98 348996.27 79556.89 237331.02 458334.35 800396.75 1260235.22 1412.19    1
 # k_bar        -0.05    0.03      1.15    -2.37     -0.79     -0.03      0.69       2.20 1399.25    1
@@ -303,5 +275,265 @@ round(stats,2)
 mcmc_dens_overlay(
   as.array(fit),
   pars = c("sigma_td", "alpha_td","k_bar","betapop","betaagr","p"),
-  facet_args = list(nrow = 2))
+  facet_args = list(nrow = 2)) + 
+  theme_bw()
 
+#--------------------------------------------------------------------#
+#--- write model with Stan code / WITHOUT spatial autocorrelation ---#
+#--------------------------------------------------------------------#
+
+constant <- "
+data{
+  int nsite; // number of sites
+  int nrep; // number of visits
+  vector[nsite] agr; // covariate agr
+  vector[nsite] pop; // covariate pop
+  array[nsite, nrep] int y; // det/non-det data
+  array[nsite, nrep] int sampled; // indicator for whether site is sampled or not (NA)
+  // vector[nsite] x; // covariate x
+}
+
+parameters{
+  real betaagr; // slope 
+  real betapop; // slope 
+  real k_bar; // intercept
+  real <lower=0, upper = 1> p;
+}
+
+transformed parameters{
+  vector[nsite] psi; // prob of occurrence at each site i
+  for(isite in 1:nsite){
+    psi[isite] = inv_logit(k_bar + betaagr * agr[isite] + betapop * pop[isite]);
+  }
+
+}
+
+model{
+
+  vector[nsite] log_psi; // log of psi
+  vector[nsite] log1m_psi; // log of 1-psi
+
+  // Priors
+  betaagr ~ normal(0, 1.5);
+  betapop ~ normal(0, 1.5);
+  k_bar ~ normal(0, 1.5);
+  p ~ uniform(0, 1);
+
+  // Likelihood
+  for(isite in 1:nsite){
+  real lp_if_present = log(psi[isite]);
+    for (j in 1:nrep){
+      if (sampled[isite,j])
+        lp_if_present += bernoulli_lpmf(y[isite, j] | p);
+    }
+      if(sum(y[isite, 1:nrep]) > 0){
+        target += lp_if_present;
+      } else {
+        target += log_sum_exp(lp_if_present, log1m(psi[isite]));
+      }
+    }
+}
+"
+
+#--- prepare data
+data_list <- list(y = y2003woNA,
+                  nrep = ncol(y2003),
+                  nsite = nrow(y2003),
+                  agr = agr, # agric covariate
+                  pop = pop, # pop density covariate
+                  sampled = !is.na(y2003))
+
+# specify parameters to monitor
+pars <- c("betaagr","betapop","p")
+
+# pick initial values
+ini <- function(){list(betaagr = 0.5, betapop = 0.5)}
+
+# run stan
+fit <- stan(model_code = constant,
+                   data = data_list,
+                   init = ini,
+                   pars = pars,
+                   iter = iter,
+                   warmup = warmup,
+                   chains = chains,
+                   seed = seed)
+
+# calculate numerical summaries
+stats <- data.frame(summary(fit)$summary)
+round(stats,2)
+
+#          mean se_mean  sd    X2.5.  X25.   X50.   X75.  X97.5. n_eff    Rhat
+#betaagr   0.05    0.00 0.37  -0.68  -0.20   0.05   0.29   0.77 16187.89    1
+#betapop  -1.10    0.00 0.42  -1.99  -1.35  -1.07  -0.81  -0.34 15835.27    1
+#p         0.69    0.00 0.06   0.58   0.66   0.69   0.73   0.80 17076.84    1
+
+#---------------------------------------------------------------------#
+#--- BONUS: simulating occupancy data collected on stream networks ---#
+#---------------------------------------------------------------------#
+
+library(SSNbayes)
+library(viridis)
+library(RColorBrewer)
+
+seed <- 202401
+set.seed(seed)
+
+# create network
+path <-  "./code/raw_logistic1.ssn"
+raw.ssn <- createSSN(n = c(100), # nb of distinct random tree structures
+                     obsDesign = systematicDesign(spacing=1),# binomialDesign(150)
+                     importToR = TRUE,
+                     path = path,
+                     treeFunction = iterativeTreeLayout)
+nrow(raw.ssn)
+plot(raw.ssn)
+
+createDistMat(raw.ssn, predpts = NULL, o.write=TRUE)
+
+rawDFobs <- getSSNdata.frame(raw.ssn, "Obs")
+nrow(rawDFobs)
+
+# add a continuous explanatory variable
+rawDFobs[,"X1"] <- rnorm(length(rawDFobs[,1]))
+
+# partial sill = the spatially dependent (correlated) random error variance; sigma2_u
+# range	= the correlation parameter; alpha_u
+# nugget = the spatially independent (not correlated) random error variance
+
+# I modified the SSN::SimulateOnSSN() function to save the occupancy probabilities, the psi's
+source("code/SimulateOnSSN2.R")
+
+# simulate data on network
+sim.out <- SimulateOnSSN2(raw.ssn,
+                          ObsSimDF = rawDFobs,
+                          family = "Binomial",
+                          formula = ~ X1,
+                          coefficients = c(0.5, 1), 
+                          CorModels = c("Exponential.taildown"),
+                          use.nugget = FALSE,
+                          use.anisotropy = FALSE,
+                          #CorParms = c(2, 50, 0.1), # w/ nugget
+                          CorParms = c(2, 10), 
+                          addfunccol = "addfunccol")
+
+# explore the prob of occupancy we simulate
+mean(sim.out$psi) # mean occupancy
+mean(sim.out$psi<0.1) # not too many 0 prob of occupancy
+hist(sim.out$psi) # distribution over all sites
+
+# plot the simulated network/data
+sim.ssn <- sim.out$ssn.object
+plot(sim.ssn,
+     "Sim_Values",
+     nclasses = 2,
+     color.palette = c("blue","red"),
+     breaktype = "user",
+     brks = cbind(c(-.5,.5),c(.5, 1.5)))
+
+# plot levels of psi
+rawDFobs[,"psi"] <- sim.out$psi
+rawDFobs$UTM_Xcoord <- sim.out$ssn.object@obspoints@SSNPoints[[1]]@point.coords[,1]
+rawDFobs$UTM_Ycoord <- sim.out$ssn.object@obspoints@SSNPoints[[1]]@point.coords[,2]
+
+# get lines to plot networks w/ ggplot
+slot <- NULL
+df_all <- NULL
+line_id <- NULL
+df0 <- SSN::as.SpatialLines(sim.out[[1]]) %>% st_as_sf() %>% st_union
+df0 <- df0[[1]]
+for (i in 1:length(df0)) {
+  df <- data.frame(df0[i])
+  df$slot <- i
+  df$psi <- sim.out$psi[i]
+  df$line_id <- as.numeric(as.character(df$slot))
+  df_all <- rbind(df, df_all)
+}
+df_all <- dplyr::arrange(df_all, line_id)
+df_all$addfunccol_cat <- cut(df_all$psi, 
+                             breaks = seq(min(df_all$psi),
+                                          max(df_all$psi),
+                                          length.out=5),
+                             labels = 1:4,
+                             include.lowest = T)
+
+# plot network
+col <- 'gray'
+ggplot(df_all) + 
+  geom_path(aes(X1, X2, group = slot), 
+            lineend = 'round', 
+            linejoin = 'round', 
+            col = col) +
+  geom_point(data = rawDFobs,
+             aes(x = UTM_Xcoord, y = UTM_Ycoord, col = psi), size = 1.75) +
+  geom_text(data = rawDFobs,
+            aes(x = UTM_Xcoord, y = UTM_Ycoord + .3, label = locID),size = 2) +
+  scale_size_manual(values = seq(0.2,2,length.out = 5)) +
+  scale_color_viridis(option = 'C') +
+  scale_shape_manual(values = c(16)) +
+  ylab("Latitude") +
+  xlab("Longitude") +
+  theme_bw() +
+  guides(size = 'none') +
+  labs(size="",colour = "Pr(occupancy)") +
+  theme(axis.text=element_text(size=12), 
+        axis.title=element_text(size=13),
+        legend.text=element_text(size=13),
+        legend.title=element_text(size=13),
+        axis.text.x = element_text(angle = 45, hjust=1),
+        strip.background =element_rect(fill='white'))
+
+# sim values (the latent states for site occupied/non-occupied)
+z <- sim.out$ssn.object@obspoints@SSNPoints[[1]]@point.data$Sim_Values
+
+# compare prob and realized
+cbind(sim.out$psi, z)
+
+# number of sites
+R <- length(z)
+
+# detection probability
+p <- 0.6      
+
+# number of surveys/visits
+T <- 5
+
+# matrix of detections and non-detections
+y <- matrix(NA, nrow = R, ncol = T)
+
+# simulate the observation process
+# by drawing detection/non-detection observations from a Bernoulli (with probability p)
+# if site is occupied, otherwise non-detection for sure
+for (j in 1:T){
+  y[,j] <- rbinom(n = R, size = 1, prob = z * p)
+}
+y
+
+#-------------------------------------------------------#
+#--- references for packages not cited in manuscript ---#
+#-------------------------------------------------------#
+
+# SSN2: 
+#   Dumelle M, Peterson, E, Ver Hoef JM, Pearse A, Isaak D (2023). SSN2: Spatial Modeling on Stream Networks in R. R package version 0.1.0
+#
+# tidyverse: 
+#   Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache
+#   SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). Welcome to the tidyverse.
+#   Journal of Open Source Software, 4(43), 1686. doi:10.21105/joss.01686 <https://doi.org/10.21105/joss.01686>.
+#
+# sf: 
+#  Pebesma, E., & Bivand, R. (2023). Spatial Data Science: With Applications in R. Chapman and Hall/CRC. https://doi.org/10.1201/9780429459016
+#  Pebesma, E., 2018. Simple Features for R: Standardized Support for Spatial Vector Data. The R Journal 10 (1), 439-446, https://doi.org/10.32614/RJ-2018-009
+#
+# bayesplot:
+#   Gabry J, Mahr T (2022). “bayesplot: Plotting for Bayesian Models.” R package version 1.10.0, <https://mc-stan.org/bayesplot/>.
+#   Gabry J, Simpson D, Vehtari A, Betancourt M, Gelman A (2019). Visualization in Bayesian workflow. J. R. Stat. Soc. A, 182, 389-402. doi:10.1111/rssa.12378 <https://doi.org/10.1111/rssa.12378>.
+#
+# geodata: 
+#   Hijmans RJ, Barbosa M, Ghosh A, Mandel A (2024). _geodata: Download Geographic Data_. R package version 0.6-2, <https://CRAN.R-project.org/package=geodata>.
+#
+# ggspatial:
+#   Dunnington D (2023). _ggspatial: Spatial Data Framework for ggplot2_. R package version 1.1.8, <https://CRAN.R-project.org/package=ggspatial>.
+#
+# rmapshaper: citation("rmapshaper")
+#   Teucher A, Russell K (2023). _rmapshaper: Client for 'mapshaper' for 'Geospatial' Operations_. R package version 0.5.0, <https://CRAN.R-project.org/package=rmapshaper>.
