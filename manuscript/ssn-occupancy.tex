@@ -180,7 +180,7 @@ Streams and rivers provide essential habitats for numerous species of animals an
 
 In this context, species distribution models (SDMs) are essential tools in understanding and preserving biodiversity (\citeproc{ref-Elith2009}{Elith and Leathwick 2009}). SDMs predict the distribution of species, helping scientists and conservationists in identifying critical habitats and biodiversity hotspots. Additionally, SDMs inform strategies aimed at mitigating the impacts of climate and land-use changes, managing invasive species, and enhancing habitat connectivity in freshwater ecosystems (\citeproc{ref-D2015}{Domisch et al. 2015}).
 
-Species Distribution Models (SDMs) are influenced by two main issues: imperfect detection and spatial autocorrelation (\citeproc{ref-GK2018}{Guélat and Kéry 2018}). First, imperfect detection occurs when a species present in a given area may not be detected during surveys due to factors such as observer experience, species behavior, and environmental conditions. If imperfect detection is ignored, it can lead to biased estimates of species distribution and flawed inferences about the relationship between species presence and environmental factors (e.g., \citeproc{ref-Lahoz2014}{Lahoz-Monfort et al. 2014}). This can misinform conservation strategies and habitat management decisions. To address this issue, occupancy models are SDMs that rely on repeated visits of spatial sampling units for inferring distribution (\citeproc{ref-mackenzie2017}{MacKenzie et al. 2017}). These models have been widely used in freshwater ecosystems for various taxa (\citeproc{ref-Preece2021}{Preece et al. 2021}, \citeproc{ref-Charbonnel2022}{Charbonnel et al. 2022}, \citeproc{ref-Wedderburn2022}{Wedderburn et al. 2022}).
+Species Distribution Models (SDMs) are influenced by two main issues: imperfect detection and spatial autocorrelation (\citeproc{ref-GK2018}{Guélat and Kéry 2018}). First, imperfect detection occurs when a species present in a given area may not be detected during surveys due to factors such as observer experience, species behavior, and environmental conditions. If imperfect detection is ignored, it can lead to biased estimates of species distribution and flawed inferences about the relationship between species presence and environmental factors (e.g., \citeproc{ref-Lahoz2014}{Lahoz-Monfort et al. 2014}). This can misinform conservation strategies and habitat management decisions. To address this issue, occupancy models are SDMs that rely on repeated visits of spatial sampling units for inferring distribution (\citeproc{ref-mackenzie2017}{MacKenzie et al. 2017}). These models have been widely used in freshwater ecosystems for various taxa (\citeproc{ref-Wedderburn2022}{Wedderburn et al. 2022}, e.g., \citeproc{ref-Couturier2024}{Couturier et al. 2023}).
 
 Second, SDMs rely on the assumption of independent residuals. This assumption may be violated if nearby sampling sites tend to have similar probabilities of species presence, leading to biased estimates of species distribution and potentially inflating the effects of environmental factors (\citeproc{ref-Dormann2007}{Dormann et al. 2007}). Several extensions of occupancy models have been proposed to account for spatial autocorrelation, building on the spatial statistics literature, e.g.~conditional autoregressive models (\citeproc{ref-Johnson2013}{Johnson et al. 2013}) and geoadditive models (\citeproc{ref-Rushing2019}{Rushing et al. 2019}). However, these models rely on the Euclidean distance between the spatial sampling units, which does not acknowledge the spatial structure in networks of streams and rivers.
 
@@ -224,7 +224,7 @@ where I dropped the \(td\) notation in \(\tau_{td}\) for clarity, \(h\) is the s
 
 \subsection{Implementation}\label{implementation}
 
-For all analyses, I used the statistical language \texttt{R} (\citeproc{ref-R_Core_Team_2023}{R Core Team 2023}). I used the \texttt{openSTARS} (\citeproc{ref-Kattwinkel2020}{Kattwinkel et al. 2020}) and \texttt{SSN} (\citeproc{ref-VerHoef2014}{Hoef et al. 2014}) packages to build and characterize the network and calculate hydrological distances. I fitted models within the Bayesian framework, specifying weakly informative priors (\citeproc{ref-Northrup2018}{Northrup and Gerber 2018}), implementing a marginalized likelihood (\citeproc{ref-clark2019}{Clark and Altwegg 2019}), and using the \texttt{rstan} (\citeproc{ref-Stan_Development_Team_2023}{Stan Development Team 2023}) package. I ran two chains for a total of 15,000 iterations with a burn-in of 5,000 iterations. For simplicity, I summarized posterior distributions with posterior mean and 95\% credible intervals. I assessed model convergence using R-hat values (\textless{} 1.05), effective sample size (\textgreater{} 100), and visual inspection of the trace plots. I provide additional information in the code available at \url{https://github.com/oliviergimenez/spatial-stream-network-occupancy-model}.
+For all analyses, I used the statistical language \texttt{R} (\citeproc{ref-R_Core_Team_2023}{R Core Team 2023}). I used the \texttt{openSTARS} (\citeproc{ref-Kattwinkel2020}{Kattwinkel et al. 2020}) and \texttt{SSN} (\citeproc{ref-VerHoef2014}{Ver Hoef et al. 2014}) packages to build and characterize the network and calculate hydrological distances. I fitted models within the Bayesian framework, specifying weakly informative priors, implementing a marginalized likelihood, and using the \texttt{rstan} (\citeproc{ref-Stan_Development_Team_2023}{Stan Development Team 2023}) package. I ran two chains for a total of 15,000 iterations with a burn-in of 5,000 iterations. For simplicity, I summarized posterior distributions with posterior mean and 95\% credible intervals. I assessed model convergence using R-hat values (\textless{} 1.05), effective sample size (\textgreater{} 100), and visual inspection of the trace plots. I provide additional information in the code available at \url{https://github.com/oliviergimenez/spatial-stream-network-occupancy-model}.
 
 \section{Results and discussion}\label{results-and-discussion}
 
@@ -232,7 +232,7 @@ Here, I provide the parameter estimates from the new model accommodating spatial
 
 As anticipated, the effect size of human density increased when spatial autocorrelation was ignored. The most likely explanation for this is a bias due to an omitted variable. There is spatial autocorrelation in human density (see panel c in Fig. \ref{fig:mainfig}), which inflates its effect size; this bias is controlled for when spatial autocorrelation is included in the model. There may be spatial variation in occupancy probabilities attributable to another variable that needs to be accounted for.
 
-Two short-term perspectives arise from this work. From a methodological perspective, the new approach could be extended to multi-season occupancy models, enabling the modeling of colonization probability as a function of distance to habitat features that may impede species movement. This would facilitate the quantification of landscape connectivity in freshwater ecosystems (\citeproc{ref-Kervellec2023}{Kervellec et al. 2023}). Such development requires moving to spatio-temporal models for stream and river data, which have recently become avaible (\citeproc{ref-Santos2022}{Santos-Fernandez et al. 2022}). From an ecological perspective, the new approach presents significant potential for the analysis of environmental DNA (eDNA). The eDNA methodology offers substantial promise for the non-invasive monitoring of biodiversity in freshwater ecosystems (\citeproc{ref-Carraro2020}{Carraro et al. 2020}). While spatial stream network models have been employed to analyze eDNA data (\citeproc{ref-Winkowski2024}{Winkowski et al. 2024}), these models have overlooked the issue of imperfect detection. Previous studies have recognized occupancy models as effective tools for eDNA data analysis (\citeproc{ref-Burian2021}{Burian et al. 2021}), with some considering spatial autocorrelation (\citeproc{ref-Chen2019}{Chen and Ficetola 2019}), however they have yet to integrate spatial stream networks. The new approach addresses this gap by incorporating both imperfect detection and spatial stream networks.
+Two short-term perspectives arise from this work. From a methodological perspective, the new approach could be extended to multi-season occupancy models, enabling the modeling of colonization probability as a function of distance to habitat features that may impede species movement. This would facilitate the quantification of landscape connectivity in freshwater ecosystems. Such development requires moving to spatio-temporal models for stream and river data, which have recently become avaible (\citeproc{ref-Santos2022}{Santos-Fernandez et al. 2022}). From an ecological perspective, the new approach presents significant potential for the analysis of environmental DNA (eDNA). The eDNA methodology offers substantial promise for the non-invasive monitoring of biodiversity in freshwater ecosystems (\citeproc{ref-Carraro2020}{Carraro et al. 2020}). While spatial stream network models have been employed to analyze eDNA data (\citeproc{ref-Winkowski2024}{Winkowski et al. 2024}), these models have overlooked the issue of imperfect detection. Previous studies have recognized occupancy models as effective tools for eDNA data analysis (\citeproc{ref-Burian2021}{Burian et al. 2021}), with some considering spatial autocorrelation (\citeproc{ref-Chen2019}{Chen and Ficetola 2019}), however they have yet to integrate spatial stream networks. The new approach addresses this gap by incorporating both imperfect detection and spatial stream networks.
 
 \section{Acknowledgments}\label{acknowledgments}
 
@@ -265,14 +265,8 @@ Burian, A., Q. Mauvisseau, M. Bulling, S. Domisch, S. Qian, and M. Sweet. 2021. 
 \bibitem[\citeproctext]{ref-Carraro2020}
 Carraro, L., E. Mächler, R. Wüthrich, and F. Altermatt. 2020. Environmental DNA allows upscaling spatial patterns of biodiversity in freshwater ecosystems. Nature Communications 11:3585.
 
-\bibitem[\citeproctext]{ref-Charbonnel2022}
-Charbonnel, A., F. Blanc, P. Laffaille, M. Némoz, and L. Buisson. 2022. Combining spatial dependence occupancy models and conservation gap analyses to promote species conservation: A case study with a threatened semi-aquatic mammal. Biological Conservation 270:109567.
-
 \bibitem[\citeproctext]{ref-Chen2019}
 Chen, W., and G. F. Ficetola. 2019. Conditionally autoregressive models improve occupancy analyses of autocorrelated data: An example with environmental DNA. Molecular Ecology Resources 19:163--175.
-
-\bibitem[\citeproctext]{ref-clark2019}
-Clark, A. E., and R. Altwegg. 2019. Efficient {B}ayesian analysis of occupancy models with logit link functions. Ecology and Evolution 9:756--768.
 
 \bibitem[\citeproctext]{ref-Couturier2024}
 Couturier, T., J. Steinmetz, P. Defos du Rau, D. Marc, E. Trichet, R. Gomes, and A. Besnard. 2023. Intensive agriculture as the main limiting factor of the otter's return in southwest france. Biological Conservation 279:109927.
@@ -289,17 +283,11 @@ Elith, J., and J. R. Leathwick. 2009. Species distribution models: Ecological ex
 \bibitem[\citeproctext]{ref-GK2018}
 Guélat, J., and M. Kéry. 2018. Effects of spatial autocorrelation and imperfect detection on species distribution models. Methods in Ecology and Evolution 9:1614--1625.
 
-\bibitem[\citeproctext]{ref-VerHoef2014}
-Hoef, J. M. V., E. E. Peterson, D. Clifford, and R. Shah. 2014. {SSN}: An {R} package for spatial statistical modeling on stream networks. Journal of Statistical Software 56:1--45.
-
 \bibitem[\citeproctext]{ref-Johnson2013}
 Johnson, D. S., P. B. Conn, M. B. Hooten, J. C. Ray, and B. A. Pond. 2013. Spatial occupancy models for large data sets. Ecology 94:801--808.
 
 \bibitem[\citeproctext]{ref-Kattwinkel2020}
 Kattwinkel, M., E. Szöcs, E. Peterson, and R. Schäfer. 2020. Preparing GIS data for analysis of stream monitoring data: The {R} package openSTARS. Plos One 15:e0239237.
-
-\bibitem[\citeproctext]{ref-Kervellec2023}
-Kervellec, M., T. Couturier, S. Bauduin, D. Chenesseau, P. D. du Rau, N. Drouet-Hoguet, C. Duchamp, J. Steinmetz, J.-M. Vandel, and O. Gimenez. 2023. Bringing circuit theory into spatial occupancy models to assess landscape connectivity. bioRxiv.
 
 \bibitem[\citeproctext]{ref-Lahoz2014}
 Lahoz-Monfort, J. J., G. Guillera-Arroita, and B. A. Wintle. 2014. Imperfect detection impacts the performance of species distribution models. Global Ecology and Biogeography 23:504--515.
@@ -310,17 +298,11 @@ Lu, X., Y. Kanno, G. P. Valentine, J. M. Rash, and M. B. Hooten. 2024. Using mul
 \bibitem[\citeproctext]{ref-mackenzie2017}
 MacKenzie, D. I., J. D. Nichols, J. A. Royle, K. H. Pollock, L. L. Bailey, and J. E. Hines. 2017. Occupancy {Estimation} and {Modeling}: {Inferring Patterns} and {Dynamics} of {Species Occurrence}. {Elsevier}.
 
-\bibitem[\citeproctext]{ref-Northrup2018}
-Northrup, J., and B. Gerber. 2018. A comment on priors for {B}ayesian occupancy models. Plos One 13:e0192819.
-
 \bibitem[\citeproctext]{ref-Peterson2010}
 Peterson, E. E., and J. M. V. Hoef. 2010. A mixed-model moving-average approach to geostatistical modeling in stream networks. Ecology 91:644--651.
 
 \bibitem[\citeproctext]{ref-Peterson2013}
 Peterson, E. E., J. M. Ver Hoef, D. J. Isaak, J. A. Falke, M.-J. Fortin, C. E. Jordan, K. McNyset, P. Monestiez, A. S. Ruesch, A. Sengupta, N. Som, E. A. Steel, D. M. Theobald, C. E. Torgersen, and S. J. Wenger. 2013. Modelling dendritic ecological networks in space: An integrated network perspective. Ecology Letters 16:707--719.
-
-\bibitem[\citeproctext]{ref-Preece2021}
-Preece, E. P., M. Bryan, S. M. Mapes, C. Wademan, and R. Dorazio. 2021. Monitoring for freshwater mussel presence in rivers using environmental DNA. Environmental DNA 3:591--604.
 
 \bibitem[\citeproctext]{ref-R_Core_Team_2023}
 R Core Team. 2023. \href{https://www.R-project.org/}{R: A language and environment for statistical computing}. R Foundation for Statistical Computing, Vienna, Austria.
@@ -343,8 +325,11 @@ Vári, Á., S. Podschun, T. Eros, T. Hein, B. Pataki, C. Ioja, C. Adamescu, A. G
 \bibitem[\citeproctext]{ref-VerHoef2010}
 Ver Hoef, J., and E. Peterson. 2010. A moving average approach for spatial statistical models of stream networks. Journal of the American Statistical Association 105:6--18.
 
+\bibitem[\citeproctext]{ref-VerHoef2014}
+Ver Hoef, J., E. Peterson, D. Clifford, and R. Shah. 2014. {SSN}: An {R} package for spatial statistical modeling on stream networks. Journal of Statistical Software 56:1--45.
+
 \bibitem[\citeproctext]{ref-VerHoef2019}
-Ver Hoef, J., E. Peterson, and D. Isaak. 2019. Spatial statistical models for stream networks. Pages 421--441 \emph{in} G. A. E., F. M., H. J. A., and L. S. R., editors. Handbook of environmental and ecological statistics. Chapman; Hall/CRC.
+Ver Hoef, J., E. Peterson, and D. Isaak. 2019. Spatial statistical models for stream networks. Pages 421--441 \emph{in} A. E. Gelfand, M. Fuentes, J. A. Hoeting, and S. R. Lyttleton, editors. Handbook of environmental and ecological statistics. Chapman; Hall/CRC.
 
 \bibitem[\citeproctext]{ref-Wedderburn2022}
 Wedderburn, S. D., N. S. Whiterod, and L. Vilizzi. 2022. Occupancy modelling confirms the first extirpation of a freshwater fish from one of the world's largest river systems. Aquatic Conservation: Marine and Freshwater Ecosystems 32:258--268.
