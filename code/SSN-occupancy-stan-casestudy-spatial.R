@@ -271,12 +271,50 @@ round(stats,2)
 # betapop      -0.96    0.01      0.61    -2.24     -1.34     -0.91     -0.53       0.17 2079.17    1
 # p             0.71    0.00      0.05     0.59      0.67      0.71      0.74       0.80 2592.97    1
 
+# relabel param 
+my_labeller <- as_labeller(
+  x = c(
+    'sigma_td' = 'sigma',
+    'alpha_td' = 'theta',
+    'k_bar' = 'beta[0]', 
+    'betapop' = 'beta[1]',
+    'betaagr' = 'beta[2]',
+    'p' = 'p'
+  ), 
+  default = label_parsed
+)
+
 # get posterior densities
 mcmc_dens_overlay(
   as.array(fit),
-  pars = c("sigma_td", "alpha_td","k_bar","betapop","betaagr","p"),
-  facet_args = list(nrow = 2)) + 
-  theme_bw()
+  pars = c("k_bar","betapop","betaagr","sigma_td", "alpha_td","p"),
+  facet_args = list(ncol = 1, labeller = my_labeller)) + 
+  theme_bw() +
+  theme(legend.position = "none") + 
+  facet_text(size = 15)
+
+ggsave("outputs/posterior.png", dpi = 600, width = 5, height = 10)
+
+# get trace
+mcmc_trace(as.array(fit),  
+           pars = c("k_bar","betapop","betaagr","sigma_td", "alpha_td","p"),
+           facet_args = list(ncol = 1, labeller = my_labeller)) + 
+  theme_bw() +
+  theme(legend.position = "none") + 
+  facet_text(size = 15)
+
+ggsave("outputs/trace.png", dpi = 600, width = 5, height = 10)
+
+# # both posterior/trace side-by-side
+# mcmc_combo(
+#   x = as.array(fit), 
+#   #widths = c(1, 2),
+#   pars = c("k_bar","betapop","betaagr","sigma_td", "alpha_td","p"),
+#   combo = c("dens", "trace"),
+#   facet_args = list(
+#     ncol = 1,
+#     labeller = my_labeller),
+#   gg_theme = ggplot2::theme_bw() + facet_text(size = 15) + legend_none())
 
 #--------------------------------------------------------------------#
 #--- write model with Stan code / WITHOUT spatial autocorrelation ---#
@@ -368,146 +406,6 @@ round(stats,2)
 #betapop  -1.10    0.00 0.42  -1.99  -1.35  -1.07  -0.81  -0.34 15835.27    1
 #p         0.69    0.00 0.06   0.58   0.66   0.69   0.73   0.80 17076.84    1
 
-#---------------------------------------------------------------------#
-#--- BONUS: simulating occupancy data collected on stream networks ---#
-#---------------------------------------------------------------------#
-
-library(SSNbayes)
-library(viridis)
-library(RColorBrewer)
-
-seed <- 202401
-set.seed(seed)
-
-# create network
-path <-  "./code/raw_logistic1.ssn"
-raw.ssn <- createSSN(n = c(100), # nb of distinct random tree structures
-                     obsDesign = systematicDesign(spacing=1),# binomialDesign(150)
-                     importToR = TRUE,
-                     path = path,
-                     treeFunction = iterativeTreeLayout)
-nrow(raw.ssn)
-plot(raw.ssn)
-
-createDistMat(raw.ssn, predpts = NULL, o.write=TRUE)
-
-rawDFobs <- getSSNdata.frame(raw.ssn, "Obs")
-nrow(rawDFobs)
-
-# add a continuous explanatory variable
-rawDFobs[,"X1"] <- rnorm(length(rawDFobs[,1]))
-
-# partial sill = the spatially dependent (correlated) random error variance; sigma2_u
-# range	= the correlation parameter; alpha_u
-# nugget = the spatially independent (not correlated) random error variance
-
-# I modified the SSN::SimulateOnSSN() function to save the occupancy probabilities, the psi's
-source("code/SimulateOnSSN2.R")
-
-# simulate data on network
-sim.out <- SimulateOnSSN2(raw.ssn,
-                          ObsSimDF = rawDFobs,
-                          family = "Binomial",
-                          formula = ~ X1,
-                          coefficients = c(0.5, 1), 
-                          CorModels = c("Exponential.taildown"),
-                          use.nugget = FALSE,
-                          use.anisotropy = FALSE,
-                          #CorParms = c(2, 50, 0.1), # w/ nugget
-                          CorParms = c(2, 10), 
-                          addfunccol = "addfunccol")
-
-# explore the prob of occupancy we simulate
-mean(sim.out$psi) # mean occupancy
-mean(sim.out$psi<0.1) # not too many 0 prob of occupancy
-hist(sim.out$psi) # distribution over all sites
-
-# plot the simulated network/data
-sim.ssn <- sim.out$ssn.object
-plot(sim.ssn,
-     "Sim_Values",
-     nclasses = 2,
-     color.palette = c("blue","red"),
-     breaktype = "user",
-     brks = cbind(c(-.5,.5),c(.5, 1.5)))
-
-# plot levels of psi
-rawDFobs[,"psi"] <- sim.out$psi
-rawDFobs$UTM_Xcoord <- sim.out$ssn.object@obspoints@SSNPoints[[1]]@point.coords[,1]
-rawDFobs$UTM_Ycoord <- sim.out$ssn.object@obspoints@SSNPoints[[1]]@point.coords[,2]
-
-# get lines to plot networks w/ ggplot
-slot <- NULL
-df_all <- NULL
-line_id <- NULL
-df0 <- SSN::as.SpatialLines(sim.out[[1]]) %>% st_as_sf() %>% st_union
-df0 <- df0[[1]]
-for (i in 1:length(df0)) {
-  df <- data.frame(df0[i])
-  df$slot <- i
-  df$psi <- sim.out$psi[i]
-  df$line_id <- as.numeric(as.character(df$slot))
-  df_all <- rbind(df, df_all)
-}
-df_all <- dplyr::arrange(df_all, line_id)
-df_all$addfunccol_cat <- cut(df_all$psi, 
-                             breaks = seq(min(df_all$psi),
-                                          max(df_all$psi),
-                                          length.out=5),
-                             labels = 1:4,
-                             include.lowest = T)
-
-# plot network
-col <- 'gray'
-ggplot(df_all) + 
-  geom_path(aes(X1, X2, group = slot), 
-            lineend = 'round', 
-            linejoin = 'round', 
-            col = col) +
-  geom_point(data = rawDFobs,
-             aes(x = UTM_Xcoord, y = UTM_Ycoord, col = psi), size = 1.75) +
-  geom_text(data = rawDFobs,
-            aes(x = UTM_Xcoord, y = UTM_Ycoord + .3, label = locID),size = 2) +
-  scale_size_manual(values = seq(0.2,2,length.out = 5)) +
-  scale_color_viridis(option = 'C') +
-  scale_shape_manual(values = c(16)) +
-  ylab("Latitude") +
-  xlab("Longitude") +
-  theme_bw() +
-  guides(size = 'none') +
-  labs(size="",colour = "Pr(occupancy)") +
-  theme(axis.text=element_text(size=12), 
-        axis.title=element_text(size=13),
-        legend.text=element_text(size=13),
-        legend.title=element_text(size=13),
-        axis.text.x = element_text(angle = 45, hjust=1),
-        strip.background =element_rect(fill='white'))
-
-# sim values (the latent states for site occupied/non-occupied)
-z <- sim.out$ssn.object@obspoints@SSNPoints[[1]]@point.data$Sim_Values
-
-# compare prob and realized
-cbind(sim.out$psi, z)
-
-# number of sites
-R <- length(z)
-
-# detection probability
-p <- 0.6      
-
-# number of surveys/visits
-T <- 5
-
-# matrix of detections and non-detections
-y <- matrix(NA, nrow = R, ncol = T)
-
-# simulate the observation process
-# by drawing detection/non-detection observations from a Bernoulli (with probability p)
-# if site is occupied, otherwise non-detection for sure
-for (j in 1:T){
-  y[,j] <- rbinom(n = R, size = 1, prob = z * p)
-}
-y
 
 #-------------------------------------------------------#
 #--- references for packages not cited in manuscript ---#

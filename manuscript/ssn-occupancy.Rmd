@@ -194,3 +194,11 @@ include_graphics("mainfigure.png")
 ```
 
 \elandscape
+
+\clearpage
+
+\newpage
+
+```{r postrace, out.width="98%", fig.align='center', fig.pos='b', fig.cap="Posterior distribution and trace plots $\\beta_0$, $\\beta_1$, $\\beta_2$, $\\sigma$, $\\theta$, $p$ is the detection probability."}
+include_graphics("posterior-trace.png")
+```

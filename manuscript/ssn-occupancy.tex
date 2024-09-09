@@ -146,7 +146,7 @@
 
 \title{Spatial occupancy models for data collected on stream networks}
 \author{Olivier Gimenez\textsuperscript{1}*}
-\date{2024-07-25}
+\date{2024-09-09}
 
 \begin{document}
 \maketitle
@@ -224,7 +224,7 @@ where I dropped the \(td\) notation in \(\tau_{td}\) for clarity, \(h\) is the s
 
 \subsection{Implementation}\label{implementation}
 
-For all analyses, I used the statistical language \texttt{R} (\citeproc{ref-R_Core_Team_2023}{R Core Team 2023}). I used the \texttt{openSTARS} (\citeproc{ref-Kattwinkel2020}{Kattwinkel et al. 2020}) and \texttt{SSN} (\citeproc{ref-VerHoef2014}{Ver Hoef et al. 2014}) packages to build and characterize the network and calculate stream distances. I fitted models within the Bayesian framework, specifying weakly informative priors and using the \texttt{rstan} (\citeproc{ref-Stan_Development_Team_2023}{Stan Development Team 2023}) package. I ran two chains for a total of 15,000 iterations with a burn-in of 5,000 iterations. I summarized posterior distributions with posterior mean and 95\% credible intervals. I assessed model convergence using R-hat values (\textless{} 1.1), effective sample size (\textgreater{} 100), and visual inspection of the trace plots. I provide additional information in the code available at \url{https://github.com/oliviergimenez/spatial-stream-network-occupancy-model}.
+For all analyses, I used the statistical language \texttt{R} (\citeproc{ref-R_Core_Team_2023}{R Core Team 2023}). I used the \texttt{openSTARS} (\citeproc{ref-Kattwinkel2020}{Kattwinkel et al. 2020}) and \texttt{SSN} (\citeproc{ref-VerHoef2014}{Ver Hoef et al. 2014}) packages to build and characterize the network and calculate stream distances. I fitted models within the Bayesian framework, specifying weakly informative priors and using the \texttt{rstan} (\citeproc{ref-Stan_Development_Team_2024}{Stan Development Team 2024}) package. I ran two chains for a total of 15,000 iterations with a burn-in of 5,000 iterations. I summarized posterior distributions with posterior mean and 95\% credible intervals. I assessed model convergence using R-hat values (\textless{} 1.1), effective sample size (\textgreater{} 100), and visual inspection of the trace plots. I provide additional information in the code available at \url{https://github.com/oliviergimenez/spatial-stream-network-occupancy-model}.
 
 \section{Results and discussion}\label{results-and-discussion}
 
@@ -316,8 +316,8 @@ Rushing, C., J. andrew Royle, D. Ziolkowski Jr, and K. Pardieck. 2019. Modeling 
 \bibitem[\citeproctext]{ref-Santos2022}
 Santos-Fernandez, E., J. M. Ver Hoef, E. E. Peterson, J. McGree, D. J. Isaak, and K. Mengersen. 2022. Bayesian spatio-temporal models for stream networks. Computational Statistics \& Data Analysis 170:107446.
 
-\bibitem[\citeproctext]{ref-Stan_Development_Team_2023}
-Stan Development Team. 2023. \href{https://mc-stan.org/}{{RStan}: The {R} interface to {Stan}}.
+\bibitem[\citeproctext]{ref-Stan_Development_Team_2024}
+Stan Development Team. 2024. \href{https://mc-stan.org/}{{RStan}: The {R} interface to {Stan}}.
 
 \bibitem[\citeproctext]{ref-V2022}
 Vári, Á., S. Podschun, T. Eros, T. Hein, B. Pataki, C. Ioja, C. Adamescu, A. Gerhardt, T. Gruber, A. Dedić, M. Ciric, B. Gavrilović, and A. Báldi. 2021. Freshwater systems and ecosystem services: Challenges and chances for cross-fertilization of disciplines. Ambio 51:135--151.
@@ -357,5 +357,18 @@ Winkowski, J. J., J. D. Olden, and S. Brown. 2024. Integrating spatial stream ne
 \end{figure}
 
 \elandscape
+
+\clearpage
+
+\newpage
+
+\begin{figure}[b]
+
+{\centering \includegraphics[width=0.98\linewidth]{posterior-trace} 
+
+}
+
+\caption{Posterior distribution and trace plots $\beta_0$, $\beta_1$, $\beta_2$, $\sigma$, $\theta$, $p$ is the detection probability.}\label{fig:postrace}
+\end{figure}
 
 \end{document}
