@@ -170,7 +170,7 @@ Two short-term perspectives arise from this work. From a methodological perspect
 
 # Acknowledgments
 
-First, I would like to warmly thank Jay Ver Hoef and Edgar Santos Fernández for useful discussions on spatial stream network models. Also, I thank Maëlis Kervellec for sharing her code, and Thibaut Couturier for explaining the otter data. Finally, I thank all structures and people who participated in the coordination, fieldwork and data management of the otter monitoring.  
+First, I would like to warmly thank Jay Ver Hoef and Edgar Santos Fernández for useful discussions on spatial stream network models. Second, I thank Maëlis Kervellec for sharing her code, and Thibaut Couturier for explaining the otter data. Third, I thank all structures and people who participated in the coordination, fieldwork and data management of the otter monitoring. Last, I thank the audience of the GDR2024 and ISEC2024 conferences for their questions about a talk (available at <https://doi.org/10.6084/m9.figshare.26968879.v1>) that led to this paper. 
 
 # Ethics and Integrity statements
 
