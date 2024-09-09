@@ -3,6 +3,7 @@
 * [R and Stan code](https://github.com/oliviergimenez/spatial-stream-network-occupancy-model/tree/main/code)
     * [Analyse otter data](https://github.com/oliviergimenez/spatial-stream-network-occupancy-model/blob/main/code/SSN-occupancy-stan-casestudy-spatial.R) with and without spatial autocorrelation
     * [Get network](https://github.com/oliviergimenez/spatial-stream-network-occupancy-model/blob/main/code/prepare-ssn-openSTARS.R) structure and characteristics
+    * [Conduct simulations](https://github.com/oliviergimenez/spatial-stream-network-occupancy-model/blob/main/code/SSN-occupancy-stan-simulations-spatial.R)
 * [Data](https://github.com/oliviergimenez/spatial-stream-network-occupancy-model/tree/main/data)
 * [Manuscript](https://github.com/oliviergimenez/spatial-stream-network-occupancy-model/tree/main/manuscript)
 
