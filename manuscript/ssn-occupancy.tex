@@ -146,7 +146,7 @@
 
 \title{Spatial occupancy models for data collected on stream networks}
 \author{Olivier Gimenez\textsuperscript{1}*}
-\date{2024-09-09}
+\date{2024-09-10}
 
 \begin{document}
 \maketitle
@@ -194,7 +194,7 @@ To address imperfect detection, I use occupancy models to estimate the true spec
 
 \subsection{Spatial autocorrelation for stream networks}\label{spatial-autocorrelation-for-stream-networks}
 
-How is spatial autocorrelation accounted for in occupancy models? The usual way is to write the probabilities of occupancy \(\boldsymbol{\psi} = (\psi_1, \ldots, \psi_S)\) on some scale, say the logit scale, as a function of \(P\) explanatory variables gathered in a matrix \(\mathbf{X}\) with \(S\) rows and \(P+1\) columns with a corresponding vector of regression parameters \(\boldsymbol{\beta} = (\beta_0, \beta_1, \ldots, \beta_P)\) that need to be estimated. To account for spatial autocorrelation, a random effect \(\boldsymbol{\epsilon}\) is added to the model, which captures the spatial dependencies among sites (\citeproc{ref-GK2018}{Guélat and Kéry 2018}):
+How is spatial autocorrelation accounted for in occupancy models? The usual way is to write the probabilities of occupancy \(\boldsymbol{\psi} = (\psi_1, \ldots, \psi_S)^T\) on some scale, say the logit scale, as a function of \(P\) explanatory variables gathered in a matrix \(\mathbf{X}\) with \(S\) rows and \(P+1\) columns (including a column of 1's for the intercept) with a corresponding vector of regression parameters \(\boldsymbol{\beta} = (\beta_0, \beta_1, \ldots, \beta_P)^T\) that need to be estimated. To account for spatial autocorrelation, a random effect \(\boldsymbol{\epsilon}\) is added to the model, which captures the spatial dependencies among sites (\citeproc{ref-GK2018}{Guélat and Kéry 2018}):
 
 \begin{equation}
 \text{logit}(\boldsymbol{\psi}) = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\epsilon}.
@@ -244,11 +244,11 @@ As anticipated, the effect size of human density increased when spatial autocorr
 
 The results of the simulation study underscored the importance of accounting for spatial autocorrelation. Ignoring spatial autocorrelation led to a relative bias of -26\% in the slope of the covariate, compared to just 0.7\% when spatial autocorrelation was included. Although the range parameter exhibited substantial bias (330\%), this outcome was expected. In spatial models, there is typically a strong positive relationship between the range parameter and the partial sill (\citeproc{ref-zhang2004}{Zhang 2004}, \citeproc{ref-VerHoef2024}{Ver Hoef et al. 2024}), which showed a bias of 12\%. Importantly, the ratio of the range parameter to the partial sill can be reliably estimated (\citeproc{ref-zhang2004}{Zhang 2004}), as evidenced by its negligible bias (0.9\%). Overall, the root mean square prediction error (RMSPE) was lower for the model with spatial correlation (RMSPE = 0.18) compared to the model without it (RMSPE = 0.23).
 
-Two short-term perspectives arise from this work. From a methodological perspective, the new approach could be extended to multi-season occupancy models, enabling the modeling of colonization probability as a function of distance to habitat features that may impede species movement. This would facilitate the quantification of landscape connectivity in freshwater ecosystems. Such development requires moving to spatio-temporal models for stream and river data, which have recently become avaible (\citeproc{ref-Santos2022}{Santos-Fernandez et al. 2022}). From an ecological perspective, the new approach presents significant potential for the analysis of environmental DNA (eDNA). The eDNA methodology offers substantial promise for the non-invasive monitoring of biodiversity in freshwater ecosystems (\citeproc{ref-Carraro2020}{Carraro et al. 2020}). While spatial stream network models have been employed to analyze eDNA data (\citeproc{ref-Winkowski2024}{Winkowski et al. 2024}), these models have overlooked the issue of imperfect detection. Previous studies have recognized occupancy models as effective tools for eDNA data analysis (\citeproc{ref-Burian2021}{Burian et al. 2021}), with some considering spatial autocorrelation (\citeproc{ref-Chen2019}{Chen and Ficetola 2019}), however they have yet to integrate spatial stream networks. The new approach addresses this gap by incorporating both imperfect detection and spatial stream networks.
+Two short-term perspectives arise from this work. From a methodological perspective, the new approach could be extended to multi-season occupancy models, enabling the modeling of colonization probability as a function of distance to habitat features that may impede species movement (e.g., \citeproc{ref-Kervellec2023}{Kervellec et al. 2024}). This would facilitate the quantification of landscape connectivity in freshwater ecosystems. Such development requires moving to spatio-temporal models for stream and river data, which have recently become avaible (\citeproc{ref-Santos2022}{Santos-Fernandez et al. 2022}). From an ecological perspective, the new approach presents significant potential for the analysis of environmental DNA (eDNA). The eDNA methodology offers substantial promise for the non-invasive monitoring of biodiversity in freshwater ecosystems (\citeproc{ref-Carraro2020}{Carraro et al. 2020}). While spatial stream network models have been employed to analyze eDNA data (\citeproc{ref-Winkowski2024}{Winkowski et al. 2024}), these models have overlooked the issue of imperfect detection. Previous studies have recognized occupancy models as effective tools for eDNA data analysis (\citeproc{ref-Burian2021}{Burian et al. 2021}), with some considering spatial autocorrelation (\citeproc{ref-Chen2019}{Chen and Ficetola 2019}), however they have yet to integrate spatial stream networks. The new approach addresses this gap by incorporating both imperfect detection and spatial stream networks.
 
 \section{Acknowledgments}\label{acknowledgments}
 
-First, I would like to warmly thank Jay Ver Hoef and Edgar Santos Fernández for useful discussions on spatial stream network models. Second, I thank Maëlis Kervellec for sharing her code, and Thibaut Couturier for explaining the otter data. Third, I thank all structures and people who participated in the coordination, fieldwork and data management of the otter monitoring. Last, I thank the audience of the GDR2024 and ISEC2024 conferences for their questions about a talk (available at \url{https://doi.org/10.6084/m9.figshare.26968879.v1}) that led to this paper.
+First, I would like to warmly thank Jay Ver Hoef and Edgar Santos Fernández for useful discussions on spatial stream network models. Second, I thank Maëlis Kervellec for sharing her code, and Thibaut Couturier for explaining and facilicitating the access to the otter data. Third, I thank all structures and people who participated in the coordination, fieldwork and data management of the otter monitoring. Last, I thank the audience of the GDR2024 and ISEC2024 conferences for their questions about the talk (available at \url{https://doi.org/10.6084/m9.figshare.26968879.v1}) that led to this paper.
 
 \section{Ethics and Integrity statements}\label{ethics-and-integrity-statements}
 
@@ -308,6 +308,9 @@ Johnson, D. S., P. B. Conn, M. B. Hooten, J. C. Ray, and B. A. Pond. 2013. Spati
 
 \bibitem[\citeproctext]{ref-Kattwinkel2020}
 Kattwinkel, M., E. Szöcs, E. Peterson, and R. Schäfer. 2020. Preparing GIS data for analysis of stream monitoring data: The {R} package openSTARS. Plos One 15:e0239237.
+
+\bibitem[\citeproctext]{ref-Kervellec2023}
+Kervellec, M., T. Couturier, S. Bauduin, D. Chenesseau, P. D. du Rau, N. Drouet-Hoguet, C. Duchamp, J. Steinmetz, J.-M. Vandel, and O. Gimenez. 2024. Bringing circuit theory into spatial occupancy models to assess landscape connectivity. Methods in Ecology and Evolution.
 
 \bibitem[\citeproctext]{ref-Lahoz2014}
 Lahoz-Monfort, J. J., G. Guillera-Arroita, and B. A. Wintle. 2014. Imperfect detection impacts the performance of species distribution models. Global Ecology and Biogeography 23:504--515.
